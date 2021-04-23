@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "313941027963",
+    "project_id": "digitallx",
+    "storage_bucket": "digitallx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313941027963:android:2314d0ae18b7c7016186de",
+        "android_client_info": {
+          "package_name": "com.prepuni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313941027963-omp7grnv8os9le9tbp9d0lvbbrmi5dq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv_sKwr-LX7vpbM-92HhyLW1t9RmLdsKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313941027963-omp7grnv8os9le9tbp9d0lvbbrmi5dq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "313941027963-73ckl6i1192lopg3tsq5odbscc72vm9b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.prepuni",
+                "app_store_id": "1546292464"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
