@@ -530,7 +530,7 @@ const SignUp: FunctionComponent<props> = ({navigation, scene}) => {
       />
       <AuthHeader
         back={controls.page === 1 ? true : false}
-        pageTitle={'Sign Up'}
+        pageTitle={'Sign In'}
         navigation={navigation}
       />
 

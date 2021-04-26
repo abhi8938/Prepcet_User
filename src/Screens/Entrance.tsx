@@ -17,7 +17,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {Height, width} from '../Constants/size';
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
@@ -89,7 +89,6 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
       },
       Platform.OS === 'android' ? 0 : 1100,
     );
-    return () => {};
   }, []);
   const animations = useAnimatedStyle(() => {
     return {

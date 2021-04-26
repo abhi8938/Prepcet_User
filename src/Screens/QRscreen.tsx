@@ -1,23 +1,44 @@
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 import {StyleSheet, View, TouchableOpacity, Text, Share} from 'react-native';
-import TopNavbar from '../Components/common/TopNavbar';
 import QRCode from 'react-native-qrcode-svg';
-import SplashScreen from 'react-native-splash-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CustomHeader from '../Common/CustomHeader';
 import theme from '../Constants/theme';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useGlobalState} from '../State/GlobalState';
 
-type props = {};
-const QRscreen: FunctionComponent<props> = () => {
-  const onBack = () => {};
+type props = {
+  navigation: any;
+  route: any;
+};
+const QRscreen: FunctionComponent<props> = ({navigation, route}) => {
+  const globalState: any = useGlobalState();
+  const [link, setLink] = useState('');
   useEffect(() => {
-    SplashScreen.hide();
+    AsyncStorage.getItem('shareLink').then((link) => {
+      if (link) {
+        setLink(link);
+      } else {
+        dynamicLinks()
+          .buildLink({
+            link: 'https://prepuni.in/' + globalState.user._id,
+            // domainUriPrefix is created in your Firebase console
+            domainUriPrefix: 'https://prepuni.page.link',
+          })
+          .then((link) => {
+            AsyncStorage.setItem('shareLink', link);
+            setLink(link);
+          })
+          .catch((error) => console.log('dynamic link error', error));
+      }
+    });
   }, []);
 
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message:
-          'PrepUni Refer Link http://awesome.link.qr. Use this link to avail 10% discount on PrepUni subscription',
+        message: `PrepUni Refer Link ${link}. Use this link to avail 10% discount on PrepUni subscription`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -34,15 +55,23 @@ const QRscreen: FunctionComponent<props> = () => {
   };
   return (
     <>
-      <TopNavbar title={'Refer'} iconOnPress={onBack} logo />
       <View style={styles.parent}>
-        <View>
-          <QRCode
-            value="http://awesome.link.qr"
-            logo={require('../Assets/images/prepuni_logo.jpg')}
-            logoSize={40}
-            size={200}
-          />
+        <CustomHeader
+          navigation={navigation}
+          scene={route}
+          title={'Refer'}
+          nav
+          logo
+        />
+        <View style={{marginTop: '9%'}}>
+          {link.length !== 0 && (
+            <QRCode
+              value={link}
+              logo={require('../Assets/images/prepuni_logo.jpg')}
+              logoSize={40}
+              size={200}
+            />
+          )}
         </View>
         <View style={styles.shareParent}>
           <Text style={styles.scanQRText}>Scan this QR code to Refer</Text>
@@ -67,8 +96,8 @@ const styles = StyleSheet.create({
   parent: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 40,
     paddingBottom: 60,
+    backgroundColor: '#fff',
   },
   shareParent: {
     marginTop: 'auto',

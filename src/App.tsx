@@ -6,13 +6,10 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 
 import AlertModal from './Components/modals/AlertModal';
 import AppScreens from './Navigation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GlobalState} from './State/GlobalState';
-import {IOSSizes} from './Constants/sample';
 import {NavigationContainer} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import notification from './Services/notification';
-import useAuthState from './State/AuthState';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log('Message handled in the background!', remoteMessage);
@@ -37,7 +34,6 @@ const App = ({}) => {
   return (
     <GlobalState>
       <AlertModal />
-
       <NavigationContainer>
         <AppScreens />
       </NavigationContainer>
