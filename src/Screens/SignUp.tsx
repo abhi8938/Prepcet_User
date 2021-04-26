@@ -15,7 +15,6 @@ import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import AgreementModal from '../Components/modals/AgreementModal';
 import AlertModal from '../Components/modals/AlertModal';
 import AuthHeader from '../Components/common/AuthHeader';
-import CheckBox from '@react-native-community/checkbox';
 import DateInput from '../Components/DateInput';
 import FVUModal from '../Components/modals/FVU';
 import {Height} from '../Constants/size';
@@ -28,6 +27,7 @@ import VerificationInput from '../Components/common/VerificationInput';
 import baseStyles from '../Components/common/styles';
 import theme from '../Constants/theme';
 import useAuthState from '../State/AuthState';
+import {CheckBox} from 'react-native-elements';
 
 type props = {
   navigation: any;
@@ -428,13 +428,11 @@ const FourthPage = ({
       <View style={styles.checkBoxes}>
         <View style={styles.NameContainer}>
           <CheckBox
-            tintColors={{
-              true: theme.COLORS.ACTIVE,
-            }}
-            style={styles.headCheckBox}
+            checkedColor={theme.COLORS.ACTIVE}
+            containerStyle={styles.headCheckBox}
             disabled={false}
-            value={controls.tnc}
-            onValueChange={(newValue) => handleControls('tnc', !controls.tnc)}
+            checked={controls.tnc}
+            onPress={() => handleControls('tnc', !controls.tnc)}
           />
           <Text style={styles.head_text}>
             <Text style={{color: theme.COLORS.HEADER}}>I hereby, </Text>Read and
@@ -447,9 +445,9 @@ const FourthPage = ({
         <View style={styles.linkContainer}>
           <View
             style={{
-              marginTop: -65,
+              marginTop: -64,
               backgroundColor: theme.COLORS.HEADER,
-              height: 201,
+              height: 200,
               width: 1.5,
             }}
           />
@@ -785,12 +783,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 90,
   },
-  checkBox: {
-    marginRight: theme.SIZES.small / 3,
-    transform: [{scaleX: 0.75}, {scaleY: 0.75}],
-  },
   headCheckBox: {
-    marginRight: theme.SIZES.small / 3,
+    padding: 0,
+    marginLeft: 6,
   },
   head_text: {
     fontSize: theme.SIZES.normal * 1.1,
