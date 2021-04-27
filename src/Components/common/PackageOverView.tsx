@@ -140,7 +140,7 @@ const PackageOverView: FunctionComponent<props> = ({
             {title}
           </Text>
           <Text style={{alignSelf: 'center', fontWeight: 'bold', marginTop: 8}}>
-            {packs.price}
+            {parseInt(packs.price) - parseInt(packs.discount)}
           </Text>
           {packs.features &&
             packs.features.map((item: any, index: number) => (

@@ -30,6 +30,7 @@ type props = {
   data: {
     title: string;
     price: string;
+    discount: string;
     Features: [featuresProp];
   };
   buttonProps: {
@@ -56,7 +57,9 @@ const AlertModal: FunctionComponent<props> = ({
           {data.title}
           <Text>{duration?.text}</Text>
         </Text>
-        <Text style={[baseStyles.body, styles.price]}>{data.price}</Text>
+        <Text style={[baseStyles.body, styles.price]}>
+          {parseInt(data.price) - parseInt(data.discount)}
+        </Text>
         <View style={styles.listContainer}>
           {data.Features.map((item) => (
             <ListItem item={item} />

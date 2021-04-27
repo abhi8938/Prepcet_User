@@ -108,27 +108,29 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
   }, []);
   useEffect(() => {
     const unsubscribe = dynamicLinks().onLink((link) => {
-      console.log('dynamic link', link);
+      if (link) {
+        console.log('referal', link.url.split('/')[3]);
+      }
       setTimeout(() => {
         Snackbar.show({
           text: 'Referal Applied!',
           duration: Snackbar.LENGTH_SHORT,
         });
       }, 10);
-      navigation.navigate('Signup');
+      navigation.navigate('Signup', {referal: link.url.split('/')[3]});
     });
     dynamicLinks()
       .getInitialLink()
       .then((link) => {
         if (link) {
-          console.log('link', link);
+          console.log('referal', link.url.split('/')[3]);
           setTimeout(() => {
             Snackbar.show({
               text: 'Referal Applied!',
               duration: Snackbar.LENGTH_SHORT,
             });
           }, 10);
-          navigation.navigate('Signup');
+          navigation.navigate('Signup', {referal: link.url.split('/')[3]});
         }
       });
     return () => unsubscribe();

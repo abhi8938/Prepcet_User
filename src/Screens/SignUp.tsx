@@ -31,25 +31,8 @@ import {CheckBox} from 'react-native-elements';
 
 type props = {
   navigation: any;
-  scene: any;
+  route: any;
 };
-const sampleList = [
-  {
-    _id: 'dsadadasda',
-    name: 'Delhi University',
-    icon: 'dsadads',
-  },
-  {
-    _id: 'dsadadasda',
-    name: 'Rajasthan University',
-    icon: 'dsadads',
-  },
-  {
-    _id: 'dsadadasda',
-    name: 'Rajasthan University',
-    icon: 'dsadads',
-  },
-];
 const gender = [
   {
     label: 'male',
@@ -479,7 +462,7 @@ const FourthPage = ({
     </View>
   );
 };
-const SignUp: FunctionComponent<props> = ({navigation, scene}) => {
+const SignUp: FunctionComponent<props> = ({navigation, route}) => {
   const {
     load,
     handlePageChange,
@@ -505,6 +488,7 @@ const SignUp: FunctionComponent<props> = ({navigation, scene}) => {
     policies,
     selectPolicy,
     handleLists,
+    setReferralCode,
   } = useAuthState();
   // const test = useAuthState();
   // let data = test.register;
@@ -513,6 +497,12 @@ const SignUp: FunctionComponent<props> = ({navigation, scene}) => {
   //   console.log(register);
   //   setRegister(returnRegister());
   // }, [data]);
+  useEffect(() => {
+    if (route.params?.referal) {
+      console.log('params', route.params.referal);
+      setReferralCode(route.params.referal);
+    }
+  }, [route.params]);
   return (
     // <View style={styles.parent}>
     <ImageBackground
