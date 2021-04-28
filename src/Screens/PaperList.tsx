@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Common/CustomHeader';
@@ -17,6 +17,8 @@ import {URL} from '../Constants/urls';
 import bg from '../../assets/images/bg.png';
 import theme from '../Constants/theme';
 import {useGlobalState} from '../State/GlobalState';
+import RNFetchBlob from 'rn-fetch-blob';
+import * as Progress from 'react-native-progress';
 
 type props = {
   navigation: any;
@@ -26,9 +28,28 @@ type props = {
 
 const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
   const globalState: any = useGlobalState();
+  const [progress, setProgress] = useState(-1);
+  const onSave = async (link: string) => {
+    const token: any = await AsyncStorage.getItem('TOKEN');
+    RNFetchBlob.config({
+      path: RNFetchBlob.fs.dirs.MainBundleDir + '/' + link,
+      fileCache: true,
+    })
+      .fetch('GET', 'https://digitalluxe.ca/api/paper/files/' + link, {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      })
+      .progress((received, total) => {
+        setProgress(received / total);
+      })
+      .then((res) => {
+        setProgress(-1);
+        console.log('The file saved to ', res.path());
+      })
+      .catch((error) => console.log('download error', error));
+  };
   const {id, edit} = route.params;
   const paperView = ({item, index}: {item: any; index: number}) => {
-    console.log('item', item);
     return (
       <View
         style={{
@@ -39,7 +60,14 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
           marginTop: theme.SIZES.large * 2.5,
         }}>
         <TouchableOpacity
-          style={styles.paperViewParent}
+          style={
+            edit
+              ? [
+                  styles.paperViewParent,
+                  {paddingHorizontal: theme.SIZES.normal * 0.9},
+                ]
+              : styles.paperViewParent
+          }
           onPress={
             !edit
               ? () =>
@@ -64,17 +92,42 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
           </View>
         </TouchableOpacity>
         {edit && (
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() =>
-              navigation.navigate('Notesdesc', {
-                subjectIndex: id,
-                paperIndex: id,
-                paperId: item._id,
-              })
-            }>
-            <Image source={require('../../assets/images/notesIcon.png')} />
-          </TouchableOpacity>
+          <>
+            {progress === -1 && (
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => onSave(item.link)}>
+                <IonicIcons
+                  name={'download-outline'}
+                  size={28}
+                  color={'#00000070'}
+                />
+              </TouchableOpacity>
+            )}
+            {progress !== -1 && (
+              <View style={styles.editButton}>
+                <Progress.Circle
+                  progress={progress}
+                  size={28}
+                  color={theme.COLORS.ACTIVE}
+                  showsText={true}
+                  textStyle={{fontSize: 8}}
+                  thickness={1.5}
+                />
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() =>
+                navigation.navigate('Notesdesc', {
+                  subjectIndex: id,
+                  paperIndex: id,
+                  paperId: item._id,
+                })
+              }>
+              <Image source={require('../../assets/images/notesIcon.png')} />
+            </TouchableOpacity>
+          </>
         )}
       </View>
     );
@@ -124,7 +177,7 @@ const styles = StyleSheet.create({
   },
   paperViewParent: {
     paddingHorizontal: theme.SIZES.normal * 2,
-    padding: theme.SIZES.small * 0.7,
+    paddingVertical: theme.SIZES.small * 0.7,
     borderRadius: theme.SIZES.small,
     backgroundColor: '#fff',
     shadowColor: '#000',

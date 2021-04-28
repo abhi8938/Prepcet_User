@@ -148,7 +148,6 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
                 load={load}
                 key={index}
                 subject={item}
-                save={() => Alert.alert('Download File')}
                 onRead={() =>
                   navigation.navigate('PaperList', {id: index, edit: true})
                 }
