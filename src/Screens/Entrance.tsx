@@ -65,6 +65,7 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
     const token = await AsyncStorage.getItem('TOKEN');
     if (token !== null) {
       await getUser();
+      await getSubscription();
       return 'Main';
     } else {
       return 'Auth';
