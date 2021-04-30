@@ -5,7 +5,7 @@
 
 import {Height, width} from '../Constants/size';
 import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
 import {
   ScrollView,
   TextInput,
@@ -21,12 +21,15 @@ import profileStore from '../Services/profileStore';
 import theme from '../Constants/theme';
 import {useGlobalState} from '../State/GlobalState';
 import useMainState from '../State/MainState';
+import TextField from '../Components/common/TextField';
 
 // import KeyValue from '../Components/common/KeyValue';
 
 type props = {
   data: any;
   style?: any;
+  edit?: boolean;
+  title?: string;
 };
 const KeyValue: FunctionComponent<props> = ({data, style}) => {
   return (
@@ -37,11 +40,22 @@ const KeyValue: FunctionComponent<props> = ({data, style}) => {
   );
 };
 
-const KeyValueTextField: FunctionComponent<props> = ({data, style}) => {
+const KeyValueTextField: FunctionComponent<props> = ({
+  data,
+  style,
+  edit,
+  title,
+}) => {
+  const [val, setVal] = useState('');
   return (
     <View style={[styles.second_child, styles.second_child_last, style]}>
-      <Text style={styles.key}>{`${data && data.key} -`}</Text>
-      <TextInput style={styles.textInputStyle} value={data && data.value} />
+      <Text style={styles.key}>{title}</Text>
+      <TextInput
+        style={styles.textInputStyle}
+        value={edit ? val : data && data.value}
+        placeholder={`Enter ${data && data.key}`}
+        onChange={(text: any) => setVal(text)}
+      />
     </View>
   );
 };
@@ -58,11 +72,15 @@ const profileTemplate = {
 };
 
 const Profile = ({navigation, route}: {navigation: any; route: any}) => {
+  const [oldPass, setOldPass] = useState();
+  const [newPass, setNewPass] = useState();
+  const [edit, setEdit] = useState(false);
   const [data, setData] = useState({...profileTemplate});
   const [password, setPassword] = useState({
-    old: {key: 'Old Password', value: 'enter password'},
-    new: {key: 'New Password', value: 'enter password'},
+    password: {text: '', active: false, error_message: '', show: false},
+    password_new: {text: '', active: false, error_message: '', show: false},
   });
+
   const globalState: any = useGlobalState();
 
   useEffect(() => {
@@ -83,6 +101,23 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
     }
     setData(x);
   }, [globalState.user]);
+
+  const [register, setRegister] = useState(
+    JSON.parse(JSON.stringify(password)),
+  );
+  const handlePassword = (
+    key: string, // coming from registration template
+    key1: string,
+    value: any,
+  ) => {
+    let x: any = {...password};
+    x[key][key1] = value;
+    if (key === 'password_new' && key1 === 'text') {
+      if (x[key].text !== x.password.text)
+        x[key]['error_message'] = 'Password does not match';
+    }
+    setRegister(x);
+  };
   return (
     <ImageBackground
       source={bg}
@@ -123,8 +158,9 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
               <Icon name={'edit'} size={25} />
             </TouchableOpacity>
           </View>
-          <KeyValueTextField data={data.email} />
+          <KeyValueTextField data={data.email} title={'Email'} />
           <KeyValueTextField
+            title={'Phone Number'}
             data={data.contact}
             style={{marginTop: theme.SIZES.small}}
           />
@@ -140,22 +176,66 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
         <View style={styles.first_child}>
           <View style={styles.headWithIcon}>
             <Text style={styles.heading}>Password</Text>
-            <TouchableOpacity style={styles.iconStyle}>
+            <TouchableOpacity
+              style={styles.iconStyle}
+              onPress={() => {
+                setEdit(true);
+              }}>
               <Icon name={'edit'} size={25} />
             </TouchableOpacity>
           </View>
-          <KeyValueTextField data={password.new} />
-          <KeyValueTextField
-            data={password.old}
-            style={{marginTop: theme.SIZES.small}}
+          <TextField
+            inputProps={{
+              placeholder: 'Password',
+              value: password.password.text,
+              onChangeText: (text) => {
+                handlePassword('password', 'text', text);
+              },
+              onBlur: () => handlePassword('password', 'active', false),
+              onFocus: () => handlePassword('password', 'active', true),
+            }}
+            secureText={{
+              onToggle: () =>
+                handlePassword('password', 'show', !password.password.show),
+              hidden: password.password.show,
+            }}
+            error={password.password.error_message}
           />
+
+          <TextField
+            inputProps={{
+              placeholder: 'Re-enter Password',
+              value: password.password_new.text,
+              onChangeText: (text) => {
+                handlePassword('password_again', 'text', text);
+              },
+              onBlur: () => handlePassword('password_new', 'active', false),
+              onFocus: () => handlePassword('password_new', 'active', true),
+            }}
+            secureText={{
+              onToggle: () =>
+                handlePassword(
+                  'password_new',
+                  'show',
+                  !password.password_new.show,
+                ),
+              hidden: password.password_new.show,
+            }}
+            error={password.password_new.error_message}
+          />
+
           <Touchable
             title={'Update'}
             size={'SMALL'}
             style={styles.buttonStyle}
             filled
             loading={false}
-            touchableProps={{onPress: () => {}, disabled: false}}
+            touchableProps={{
+              onPress: () => {
+                setEdit(false);
+              },
+              disabled: false,
+            }}
           />
         </View>
       </ScrollView>

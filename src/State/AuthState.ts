@@ -592,6 +592,7 @@ const useAuthState = () => {
       return Vibration.vibrate();
     }
     final_data['type'] = 'STU';
+    final_data['email'] = `${final_data['email']}`.toLowerCase();
     const response = await service.create_user(final_data);
     if (response.status === 200) {
       try {
@@ -606,7 +607,7 @@ const useAuthState = () => {
         setLoad(false);
         return;
       }
-      setUser(response.data);
+
       setRegister(JSON.parse(JSON.stringify(RegisterTemplate)));
       handleControls('tnc', false);
       setLoad(false);
