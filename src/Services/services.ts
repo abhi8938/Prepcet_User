@@ -176,7 +176,11 @@ export default class services {
       .catch((error) => error);
   };
 
-  create_subscription = async (id: string, paymentId?: string) => {
+  create_subscription = async (
+    id: string,
+    paymentId?: string,
+    finalAmount?: string,
+  ) => {
     const token = await AsyncStorage.getItem('TOKEN');
     const headers = {
       'Content-Type': 'application/json',
@@ -187,6 +191,9 @@ export default class services {
     };
     if (paymentId) {
       data.PA_ID = paymentId;
+    }
+    if (finalAmount) {
+      data.price = parseInt(finalAmount);
     }
     return axios
       .post(URL + '/subscriptions', data, {headers})
@@ -293,6 +300,7 @@ export default class services {
     subId: string,
     status: 'ACTIVE' | 'INACTIVE',
     transId: string,
+    finalAmount: string,
   ) => {
     const token = await AsyncStorage.getItem('TOKEN');
     const headers = {
@@ -302,6 +310,7 @@ export default class services {
     const data = {
       status,
       PA_ID: transId,
+      price: parseInt(finalAmount),
     };
     return axios
       .put(URL + '/subscriptions/me', data, {headers})

@@ -11,10 +11,11 @@ import Touchable from './common/Touchable';
 import {URL} from '../Constants/urls';
 import baseStyles from './common/styles';
 import theme from '../Constants/theme';
+import RNFetchBlob from 'rn-fetch-blob';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type props = {
   subject: any;
-  save: () => void;
   onRead: () => void;
   load: boolean;
 };
@@ -70,12 +71,7 @@ const Loader = () => (
   </View>
 );
 
-const PaperListItem: FunctionComponent<props> = ({
-  subject,
-  save,
-  onRead,
-  load,
-}) => {
+const PaperListItem: FunctionComponent<props> = ({subject, onRead, load}) => {
   useEffect(() => {
     console.log('url', subject && typeof subject.cover === 'string');
     return () => {};
@@ -85,12 +81,6 @@ const PaperListItem: FunctionComponent<props> = ({
       <View style={styles.expandedParent}>
         <View style={styles.rowContainer}>
           <View style={styles.innerContainer}>
-            <Icon
-              type={false ? 'CROSS' : 'SAVE'}
-              size={0.7}
-              style={styles.iconButton}
-              onPress={save}
-            />
             <KeyValue
               itemKey={'Summary'}
               value={subject.description}

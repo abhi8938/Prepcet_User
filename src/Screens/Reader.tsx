@@ -25,6 +25,7 @@ const Reader: FunctionComponent<props> = ({navigation, route}) => {
         }}
         originWhitelist={['*']}
         javaScriptEnabled
+        injectedJavaScriptBeforeContentLoaded={`window.uri = ${uri}; window.token= ${token}; true;`}
       />
     </View>
   );

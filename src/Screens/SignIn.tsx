@@ -31,6 +31,8 @@ import Touchable from '../Components/common/Touchable';
 import {log} from 'react-native-reanimated';
 import theme from '../Constants/theme';
 import useAuthState from '../State/AuthState';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import Snackbar from 'react-native-snackbar';
 
 type props = {
   navigation: any;
@@ -104,7 +106,35 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
     );
     return () => backHandler.remove();
   }, []);
-
+  useEffect(() => {
+    const unsubscribe = dynamicLinks().onLink((link) => {
+      if (link) {
+        console.log('referal', link.url.split('/')[3]);
+      }
+      setTimeout(() => {
+        Snackbar.show({
+          text: 'Referal Applied!',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      }, 10);
+      navigation.navigate('Signup', {referal: link.url.split('/')[3]});
+    });
+    dynamicLinks()
+      .getInitialLink()
+      .then((link) => {
+        if (link) {
+          console.log('referal', link.url.split('/')[3]);
+          setTimeout(() => {
+            Snackbar.show({
+              text: 'Referal Applied!',
+              duration: Snackbar.LENGTH_SHORT,
+            });
+          }, 10);
+          navigation.navigate('Signup', {referal: link.url.split('/')[3]});
+        }
+      });
+    return () => unsubscribe();
+  }, []);
   return (
     <>
       <LogoModal show={logoModal} />

@@ -1,15 +1,12 @@
 import {Height, width} from '../Constants/size';
 import {
-  Image,
   ImageBackground,
-  Modal,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import React, {FunctionComponent, useState} from 'react';
 
@@ -29,6 +26,17 @@ type props = {
 
 const ExaminationCenter: FunctionComponent<props> = ({navigation, scene}) => {
   const globalState: any = useGlobalState();
+  const openMaps = () => {
+    const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
+    const latLng = `${28.7},${77.1}`;
+    const label = 'Custom Label';
+    const url: any = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    Linking.openURL(url);
+  };
   return (
     <ImageBackground
       source={bg}
@@ -67,12 +75,12 @@ const ExaminationCenter: FunctionComponent<props> = ({navigation, scene}) => {
               </Text>
               <Text style={{fontSize: theme.SIZES.normal, marginLeft: 'auto'}}>
                 {globalState.resources.center !== null
-                  ? globalState.resources.center.address.address
+                  ? globalState.resources.center?.address?.address
                   : 'No Address'}
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.navigateButton}>
+          <TouchableOpacity style={styles.navigateButton} onPress={openMaps}>
             <Text style={styles.navigateText}>Navigate</Text>
             <Icon name={'location-outline'} size={18} color={'#fff'} />
           </TouchableOpacity>
