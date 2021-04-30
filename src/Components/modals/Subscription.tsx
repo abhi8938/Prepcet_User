@@ -1,11 +1,12 @@
 import {Height, width} from '../../Constants/size';
 import {Image, Pressable, StyleSheet, Text, View, Modal} from 'react-native';
-import React, {FunctionComponent, useState} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 
 import Touchable from '../common/Touchable';
 import baseStyles from '../common/styles';
 import theme from '../../Constants/theme';
 import useAuthState from '../../State/AuthState';
+import {useGlobalState} from '../../State/GlobalState';
 
 type props = {
   type: 'EXPIRED' | 'ABOUTTIME';
@@ -13,7 +14,6 @@ type props = {
   message: string;
   image?: string;
   show: boolean;
-  packages: any;
 };
 
 const Subscription: FunctionComponent<props> = ({
@@ -22,11 +22,23 @@ const Subscription: FunctionComponent<props> = ({
   message,
   image,
   show,
-  packages,
 }) => {
-  const {Buy} = useAuthState();
+  const globalState: any = useGlobalState();
+  const [title, setTitle] = useState('Renew');
+  useEffect(() => {
+    if (globalState.subscription.type === 'TRIAL') {
+      setTitle('Buy');
+    }
+  }, [globalState.subscription.type]);
+
+  const {packages, getPackages, Buy} = useAuthState();
+  useEffect(() => {
+    getPackages();
+  }, []);
+
   const [hide, setHide] = useState(true);
   const pack = packages.filter((x: any) => x.type == 'PAID');
+  console.log(pack);
   return (
     <Modal visible={show && hide} transparent={true}>
       <View
@@ -45,7 +57,10 @@ const Subscription: FunctionComponent<props> = ({
             {paddingVertical: theme.SIZES.large},
           ]}>
           <Text
-            style={[baseStyles.heading, {fontSize: theme.SIZES.large * 0.85}]}>
+            style={[
+              baseStyles.heading,
+              {fontSize: theme.SIZES.large * 0.85, textAlign: 'center'},
+            ]}>
             {message}
           </Text>
           <Image
@@ -57,7 +72,7 @@ const Subscription: FunctionComponent<props> = ({
           />
           <View style={{flexDirection: 'row'}}>
             <Touchable
-              title={'Renew'}
+              title={title}
               loading={false}
               size={'MEDIUM'}
               style={{backgroundColor: 'F0F0F0'}}
@@ -77,7 +92,7 @@ const Subscription: FunctionComponent<props> = ({
                 size={'MEDIUM'}
                 style={{backgroundColor: 'F0F0F0'}}
                 touchableProps={{
-                  onPress: () => {},
+                  onPress: () => setHide(false),
                   disabled: false,
                 }}
               />
