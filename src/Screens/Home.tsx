@@ -53,6 +53,7 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
   };
 
   useEffect(() => {
+    console.log('user', globalState.user.program);
     getSubscription().then(async (subData) => {
       if (subData.hasOwnProperty('status')) {
         if (subData.status == 'INACTIVE') {
@@ -61,7 +62,8 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
         }
       }
     });
-    getSubjects(globalState.user.program._id).then(() => setLoad(false));
+    globalState.user.program &&
+      getSubjects(globalState.user.program._id).then(() => setLoad(false));
     getResources()
       .then((res) => console.log('resources_resp', res))
       .catch((e) => console.log('resources_erro', e));

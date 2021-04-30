@@ -7,6 +7,7 @@
 import {
   Alert,
   BackHandler,
+  ImageBackground,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -106,7 +107,15 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
   }, []);
 
   return (
-    <>
+    <ImageBackground
+      source={require('../Assets/images/bg.png')}
+      style={{
+        flex: 1,
+        backgroundColor: theme.COLORS.WHITE,
+        paddingBottom: theme.SIZES.normal,
+      }}
+      resizeMode="cover"
+      imageStyle={{opacity: 0.05}}>
       <LogoModal show={logoModal} />
       <ErrorScreen show={netFail} navigation={navigation} scene={scene} />
       <View style={styles.parent}>
@@ -120,9 +129,11 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
           enabled={true}
           behavior={Platform.OS === 'ios' ? 'position' : 'position'}
           style={{flex: 1}}
-          contentContainerStyle={{
-            backgroundColor: theme.COLORS.DEFAULT,
-          }}
+          contentContainerStyle={
+            {
+              // backgroundColor: theme.COLORS.DEFAULT,
+            }
+          }
           keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 19}>
           <Slider list={Slider_content} />
           <View style={styles.groupView}>
@@ -283,7 +294,7 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
           }}
         />
       </View>
-    </>
+    </ImageBackground>
   );
 };
 
@@ -292,7 +303,6 @@ export default SignIn;
 const styles = StyleSheet.create({
   parent: {
     flex: 1,
-    backgroundColor: theme.COLORS.DEFAULT,
   },
   rowContainer: {
     width: '95%',
@@ -306,7 +316,6 @@ const styles = StyleSheet.create({
   groupView: {
     paddingVertical: theme.SIZES.small,
     paddingHorizontal: theme.SIZES.small,
-    backgroundColor: theme.COLORS.DEFAULT,
   },
   link: {
     fontSize: theme.SIZES.normal - 2,

@@ -11,7 +11,11 @@ type props = {
 const Reader: FunctionComponent<props> = ({navigation, route}) => {
   const {uri, token} = route.params;
   //TODO:INJECT JAVASCRIPT for URI and TOKEN
-  useEffect(() => console.log('scene', uri, token), []);
+  // console.log('scene', uri, token);
+  let js = ` window.uri = ${uri};
+          window.token = ${token};
+          setTimeout(function() { window.alert(window.uri) }, 2000);
+         true;`;
   return (
     <View style={styles.container}>
       <StatusBar
@@ -19,12 +23,15 @@ const Reader: FunctionComponent<props> = ({navigation, route}) => {
         barStyle={'dark-content'}
       />
       <WebView
-        source={{uri: 'https://blissful-wozniak-192615.netlify.app/'}}
+        source={{uri: 'http://127.0.0.1:3000/'}}
         style={{
           flex: 1,
         }}
         originWhitelist={['*']}
-        javaScriptEnabled
+        injectedJavaScript={js}
+        onMessage={(e) => {
+          console.log('eve', e);
+        }}
       />
     </View>
   );
@@ -35,7 +42,7 @@ export default Reader;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: Platform.OS === 'ios' ? theme.SIZES.large * 1.8 : 0,
+    paddingVertical: Platform.OS === 'ios' ? theme.SIZES.large * 1.8 : 0,
     backgroundColor: '#fff',
   },
 });

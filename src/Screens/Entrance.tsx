@@ -62,12 +62,16 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
   };
 
   const isUser = async () => {
-    const token = await AsyncStorage.getItem('TOKEN');
-    if (token !== null) {
-      await getUser();
-      return 'Main';
-    } else {
-      return 'Auth';
+    try {
+      const token = await AsyncStorage.getItem('TOKEN');
+      if (token !== null) {
+        await getUser();
+        return 'Main';
+      } else {
+        return 'Auth';
+      }
+    } catch (e) {
+      console.log('get User entrance', e);
     }
   };
   useEffect(() => {

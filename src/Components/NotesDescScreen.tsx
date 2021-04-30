@@ -46,8 +46,12 @@ const NotesDescScreen: FunctionComponent<props> = ({navigation, route}) => {
     getAnnotations(paperId);
   }, []);
 
-  const bookmarks = notes?.ann?.filter((x: any) => x?.type == 'BOOKMARK');
-  const highlight = notes?.ann?.filter((x: any) => x?.type == 'HIGHLIGHT');
+  const bookmarks = notes.ann
+    ? notes?.ann?.filter((x: any) => x?.type == 'BOOKMARK')
+    : [];
+  const highlight = notes.ann
+    ? notes?.ann?.filter((x: any) => x?.type == 'HIGHLIGHT')
+    : [];
   // const underline = notes?.ann?.filter((x: any) => x?.type == 'UNDERLINE');
 
   return (
