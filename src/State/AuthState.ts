@@ -76,6 +76,7 @@ const InputValidation = (key: string, value: string) => {
       }
       break;
     case 'contact':
+      if (value.length === 0) break;
       if (!/^\d{10}$/.test(value)) error = `Invalid contact number`;
       break;
     case 'college':
@@ -338,7 +339,8 @@ const useAuthState = () => {
       try {
         const token = await firebase.messaging().getToken(); //? Not working on IOS
         await AsyncStorage.setItem('TOKEN', response.data);
-        await service.add_device_token(token);
+        await service.update_student({device_token: token});
+        await getUser();
       } catch (error) {
         handleAlert(
           'ERROR',
@@ -350,7 +352,6 @@ const useAuthState = () => {
         setLoad(false);
         return;
       }
-
       setLogin(JSON.parse(JSON.stringify(LoginTemplate)));
       setLoad(false);
       setLogoModal(true);
@@ -596,6 +597,7 @@ const useAuthState = () => {
       return Vibration.vibrate();
     }
     final_data['type'] = 'STU';
+
     if (referral !== '') {
       final_data['referal'] = referral;
     }
@@ -607,10 +609,8 @@ const useAuthState = () => {
         const token = await firebase.messaging().getToken();
         await AsyncStorage.setItem('TOKEN', response.headers['x-auth-token']);
         dispatcher({type: 'SET-USER', payload: response.data});
-        await service.add_device_token(token);
+        await service.update_student({device_token: token});
       } catch (error) {
-        console.log('signup_error - ', response.data);
-
         handleAlert('ERROR', ErrorTitles[1], `${error}`, true);
         setLoad(false);
         return;
@@ -619,7 +619,6 @@ const useAuthState = () => {
       setRegister(JSON.parse(JSON.stringify(RegisterTemplate)));
       handleControls('tnc', false);
       setLoad(false);
-
       Snackbar.show({
         text: 'Registration Successfull',
         duration: Snackbar.LENGTH_SHORT,
@@ -628,12 +627,7 @@ const useAuthState = () => {
     } else if (response.status !== 200) {
       console.log('signup_error_2 - ', response.data);
       setLoad(false);
-      return handleAlert(
-        'ERROR',
-        ErrorTitles[0],
-        `${response.data.error}`,
-        true,
-      );
+      return handleAlert('ERROR', ErrorTitles[0], `${response.data}`, true);
     }
   };
 
@@ -732,7 +726,12 @@ const useAuthState = () => {
       dispatcher({type: 'SET-SUBSCRIPTION', payload: response.data});
       return response.data;
     } else {
-      handleAlert('ERROR', ErrorTitles[0], response.data, true);
+      handleAlert(
+        'ERROR-SUBSCRIPTION-FETCH',
+        ErrorTitles[0],
+        response.data,
+        true,
+      );
       return {};
     }
   };
@@ -748,7 +747,12 @@ const useAuthState = () => {
       const order = await service.create_order(data);
       if (order.status != 200) {
         setLoad(false);
-        return handleAlert('ERROR-BUY', ErrorTitles[0], order.data, true);
+        return handleAlert(
+          'ERROR-CREATE-ORDER',
+          ErrorTitles[0],
+          order.data,
+          true,
+        );
       }
       var options = {
         description: 'PrepUni Subscription',
@@ -804,7 +808,7 @@ const useAuthState = () => {
           } else {
             setLoad(false);
             handleAlert(
-              'ERROR',
+              'ERROR-PAYMENT-UPDATE',
               ErrorTitles[0],
               'Payment Failed, please Retry.',
               true,
@@ -817,7 +821,7 @@ const useAuthState = () => {
           // handle failure
           setLoad(false);
           handleAlert(
-            'ERROR',
+            'ERROR-PAYMENT-RAZORPAY',
             ErrorTitles[0],
             `Error: ${error.code} | ${error.description}`,
             true,
@@ -825,7 +829,7 @@ const useAuthState = () => {
         });
     } catch (e) {
       setLoad(false);
-      handleAlert('ERROR', ErrorTitles[0], JSON.stringify(e), true);
+      handleAlert('ERROR-BUY', ErrorTitles[0], JSON.stringify(e), true);
       return false;
     }
   };
@@ -848,7 +852,7 @@ const useAuthState = () => {
     if (response.status === 200) {
       dispatcher({type: 'SET-SUBJECT', payload: response.data});
     } else {
-      console.log('Error', `${response.data}`);
+      console.log('ERROR-SUBJECTS', `${response.data}`);
     }
   };
   const getResources = async () => {
@@ -856,7 +860,7 @@ const useAuthState = () => {
     if (response.status === 200) {
       dispatcher({type: 'SET-RESOURCES', payload: response.data});
     } else {
-      console.log('Error', `${response.data}`);
+      console.log('ERROR-RESOURCES', `${response.data}`);
     }
   };
 

@@ -80,14 +80,14 @@ export default class services {
       .catch((error) => error);
   };
 
-  add_device_token = async (device_token: string) => {
+  update_student = async (data: any) => {
     const token = await AsyncStorage.getItem('TOKEN');
     const headers = {
       'Content-Type': 'application/json',
       'x-auth-token': token,
     };
     return axios
-      .put(URL + '/student', {device_token}, {headers})
+      .put(URL + '/students', data, {headers})
       .then((response) => response)
       .catch((error) => error);
   };
