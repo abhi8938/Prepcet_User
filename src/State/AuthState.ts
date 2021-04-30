@@ -600,6 +600,7 @@ const useAuthState = () => {
       final_data['referal'] = referral;
     }
     console.log(final_data);
+    final_data['email'] = `${final_data['email']}`.toLowerCase();
     const response = await service.create_user(final_data);
     if (response.status === 200) {
       try {
@@ -614,6 +615,7 @@ const useAuthState = () => {
         setLoad(false);
         return;
       }
+
       setRegister(JSON.parse(JSON.stringify(RegisterTemplate)));
       handleControls('tnc', false);
       setLoad(false);

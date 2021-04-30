@@ -180,7 +180,7 @@ const getNotesStore = () => {
     if (response.status === 200) {
       dispatcher({type: 'SET-NOTES', payload: response.data});
     } else {
-      console.log('Error', `${response.data}`);
+      dispatcher({type: 'SET-NOTES', payload: {}});
     }
     setLoad(false);
   };
