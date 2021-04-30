@@ -17,7 +17,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {Height, width} from '../Constants/size';
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from 'react-native-splash-screen';
@@ -62,16 +62,13 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
   };
 
   const isUser = async () => {
-    try {
-      const token = await AsyncStorage.getItem('TOKEN');
-      if (token !== null) {
-        await getUser();
-        return 'Main';
-      } else {
-        return 'Auth';
-      }
-    } catch (e) {
-      console.log('get User entrance', e);
+    const token = await AsyncStorage.getItem('TOKEN');
+    if (token !== null) {
+      await getUser();
+      await getSubscription();
+      return 'Main';
+    } else {
+      return 'Auth';
     }
   };
   useEffect(() => {
@@ -93,7 +90,6 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
       },
       Platform.OS === 'android' ? 0 : 1100,
     );
-    return () => {};
   }, []);
   const animations = useAnimatedStyle(() => {
     return {

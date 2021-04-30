@@ -44,6 +44,7 @@ const NotesDescScreen: FunctionComponent<props> = ({navigation, route}) => {
   const {notes, subject} = useGlobalState();
   useEffect(() => {
     getAnnotations(paperId);
+    console.log(notes.ann);
   }, []);
 
   const bookmarks = notes.ann

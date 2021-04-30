@@ -32,13 +32,7 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
 
   const [netFail, setNetFail] = useState(false);
   const [showSubscription, setShowSubscription] = useState(false);
-  const {
-    getSubjects,
-    getSubscription,
-    getPackages,
-    packages,
-    getResources,
-  } = useAuthState();
+  const {getSubjects, getSubscription, getResources} = useAuthState();
   const globalState: any = useGlobalState();
   const backAction = () => {
     Alert.alert('Hold on!', 'Are you sure you want to go back?', [
@@ -53,16 +47,7 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
   };
 
   useEffect(() => {
-    console.log('user', globalState.user.program);
-    getSubscription().then(async (subData) => {
-      if (subData.hasOwnProperty('status')) {
-        if (subData.status == 'INACTIVE') {
-          await getPackages();
-          setShowSubscription(true);
-        }
-      }
-    });
-    globalState.user.program &&
+    globalState.user &&
       getSubjects(globalState.user.program._id).then(() => setLoad(false));
     getResources()
       .then((res) => console.log('resources_resp', res))
@@ -73,6 +58,12 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (globalState.user.status === 'INACTIVE') {
+      setShowSubscription(true);
+    }
+  }, [globalState.user.status]);
 
   useEffect(() => {
     let backHandler = BackHandler.addEventListener(
@@ -99,7 +90,6 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
         type={'EXPIRED'}
         navigation={navigation}
         message={'Subscription Expired'}
-        packages={packages}
       />
 
       <ImageBackground
@@ -150,7 +140,6 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
                 load={load}
                 key={index}
                 subject={item}
-                save={() => Alert.alert('Download File')}
                 onRead={() =>
                   navigation.navigate('PaperList', {id: index, edit: true})
                 }

@@ -23,16 +23,21 @@ import SyllabusScreen from '../Screens/SyllabusScreen';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import PaperList from '../Screens/PaperList';
 import SubjectOverviewScreen from '../Screens/SubjectOverviewScreen';
+import QRscreen from '../Screens/QRscreen';
+import {useGlobalState} from '../State/GlobalState';
 
 const Drawer = createDrawerNavigator();
 
 const Stack = createStackNavigator();
 
 function MainStack() {
+  const globalState: any = useGlobalState();
   return (
     <Drawer.Navigator
       openByDefault={false}
-      drawerContent={(props) => <CustomDrawer {...props} />}
+      drawerContent={(props) => (
+        <CustomDrawer {...props} subStatus={globalState.subscription.type} />
+      )}
       initialRouteName="Home"
       drawerType={'slide'}>
       <Drawer.Screen name="Home" component={Home} />
@@ -42,6 +47,7 @@ function MainStack() {
       <Drawer.Screen name="Center" component={ExaminationCenter} />
       <Drawer.Screen name="Datesheet" component={DatesheetScreen} />
       <Drawer.Screen name="Notes" component={NotesScreen} />
+      <Drawer.Screen name="Refer and Earn" component={QRscreen} />
       <Drawer.Screen name="Support" component={Support} />
     </Drawer.Navigator>
   );

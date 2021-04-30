@@ -27,14 +27,28 @@ import theme from '../Constants/theme';
 import useAuthState from '../State/AuthState';
 import {useGlobalState} from '../State/GlobalState';
 import {width} from '../Constants/size';
+import Subscription from '../Components/modals/Subscription';
 
 type props = {
   navigation?: any;
+  subStatus: string;
 };
 const service = new Services();
 const CustomDrawer: FunctionComponent<props> = (props: any) => {
   const {getUser, policies} = useAuthState();
   const globalState: any = useGlobalState();
+  const [showSubscription, setShowSubscription] = useState(false);
+  const onPress = (route: any) => {
+    if (props.subStatus === 'TRIAL') {
+      if (route.name === 'Center' || route.name === 'Datesheet') {
+        setShowSubscription(true);
+      } else {
+        props.navigation.navigate(route.name);
+      }
+    } else {
+      props.navigation.navigate(route.name);
+    }
+  };
 
   const openLink = (url: string) => {
     Linking.canOpenURL(url).then((supported) => {
@@ -67,6 +81,12 @@ const CustomDrawer: FunctionComponent<props> = (props: any) => {
   };
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.parent}>
+      <Subscription
+        show={showSubscription}
+        type={'ABOUTTIME'}
+        navigation={props.navigation}
+        message={'Please Update Subscription to Access Content'}
+      />
       {render_card(
         ` ${globalState.user && globalState.user.first_name} ${
           globalState.user && globalState.user.last_name
@@ -76,16 +96,18 @@ const CustomDrawer: FunctionComponent<props> = (props: any) => {
       )}
       {props.state.routes.map((route: any) => {
         return (
-          <TouchableHighlight
-            underlayColor={theme.COLORS.HEADER}
-            activeOpacity={0.2}
-            key={`KEY-${route.name}`}
-            style={[styles.drawer_item]}
-            onPress={() => props.navigation.navigate(route.name)}>
-            <Text style={styles.text}>
-              {route.name === 'Work' ? 'My Work' : route.name}
-            </Text>
-          </TouchableHighlight>
+          <>
+            <TouchableHighlight
+              underlayColor={theme.COLORS.HEADER}
+              activeOpacity={0.2}
+              key={`KEY-${route.name}`}
+              style={[styles.drawer_item]}
+              onPress={() => onPress(route)}>
+              <Text style={styles.text}>
+                {route.name === 'Work' ? 'My Work' : route.name}
+              </Text>
+            </TouchableHighlight>
+          </>
         );
       })}
       <TouchableHighlight

@@ -185,6 +185,7 @@ const useAuthState = () => {
     semesters: [],
   });
 
+  const [referral, setReferral] = useState('');
   //* STATE HANDLERS
 
   const resetModal = () => {
@@ -221,6 +222,9 @@ const useAuthState = () => {
     }
   };
 
+  const setReferralCode = (value: string) => {
+    setReferral(value);
+  };
   const handleRegister = (
     key: string, // coming from registration template
     key1: string,
@@ -593,8 +597,12 @@ const useAuthState = () => {
       return Vibration.vibrate();
     }
     final_data['type'] = 'STU';
+
+    if (referral !== '') {
+      final_data['referal'] = referral;
+    }
+    console.log(final_data);
     final_data['email'] = `${final_data['email']}`.toLowerCase();
-    console.log('final_data', final_data);
     const response = await service.create_user(final_data);
     if (response.status === 200) {
       try {
@@ -607,6 +615,7 @@ const useAuthState = () => {
         setLoad(false);
         return;
       }
+
       setRegister(JSON.parse(JSON.stringify(RegisterTemplate)));
       handleControls('tnc', false);
       setLoad(false);
@@ -671,8 +680,12 @@ const useAuthState = () => {
     setLoad(false);
   };
 
-  const createSubscription = async (id: string, pa_id?: string) => {
-    const response = await service.create_subscription(id, pa_id);
+  const createSubscription = async (
+    id: string,
+    pa_id?: string,
+    finalAmount?: string,
+  ) => {
+    const response = await service.create_subscription(id, pa_id, finalAmount);
     if (response.status == 200) {
       console.log('subscription', response.data);
       setLogoModal(true);
@@ -687,12 +700,14 @@ const useAuthState = () => {
   const renewSubscription = async (
     status: 'ACTIVE' | 'INACTIVE',
     transId: string,
+    finalAmount: string,
   ) => {
     const response = await service.renew_subscription(
       //@ts-ignore
       subscription._id,
       status,
       transId,
+      finalAmount,
     );
     if (response.status == 200) {
       console.log('renew subscription', response.data);
@@ -722,10 +737,11 @@ const useAuthState = () => {
   };
 
   const Buy = async (navigation: any, pack: any, renew: boolean = false) => {
+    const finalAmount = pack.price - pack.discount;
     setLoad(true);
     const data = {
       STID: user._id,
-      amount: String(pack.price),
+      amount: String(finalAmount),
     };
     try {
       const order = await service.create_order(data);
@@ -743,7 +759,7 @@ const useAuthState = () => {
         image: 'https://digitalluxe.in/documents/prepuni_logo.jpg',
         currency: 'INR',
         key: 'rzp_test_JrmprfPdb6LHFI',
-        amount: String(pack.price * 10),
+        amount: String(finalAmount * 10),
         name: 'PrepUni',
         order_id: order.data.order_id, //Replace this with an order_id created using Orders API. Learn more at https://razorpay.com/docs/api/orders.
         prefill: {
@@ -769,8 +785,16 @@ const useAuthState = () => {
             setLoad(true);
             const message =
               renew == false
-                ? await createSubscription(pack._id, paymentResp.data._id)
-                : await renewSubscription('ACTIVE', paymentResp.data._id);
+                ? await createSubscription(
+                    pack._id,
+                    paymentResp.data._id,
+                    String(finalAmount),
+                  )
+                : await renewSubscription(
+                    'ACTIVE',
+                    paymentResp.data._id,
+                    String(finalAmount),
+                  );
             setLoad(false);
             if (message.length !== 0) {
               Alert.alert('Congratulations!', message, [
@@ -879,6 +903,7 @@ const useAuthState = () => {
     handleLists,
     getSubjects,
     getResources,
+    setReferralCode,
   };
 };
 
