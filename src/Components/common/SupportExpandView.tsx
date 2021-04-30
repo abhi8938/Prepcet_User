@@ -27,7 +27,7 @@ const SupportExpandView: FunctionComponent<props> = ({item}) => {
         activeOpacity={1}
         onPress={() => setShow(!show)}
         style={[styles.inner_container]}>
-        <Text style={[styles.question]}>{item.ques}</Text>
+        <Text style={[styles.question]}>{item.question}</Text>
         <Icon
           name={show ? 'caret-up-outline' : 'caret-down-outline'}
           size={25}
@@ -35,7 +35,7 @@ const SupportExpandView: FunctionComponent<props> = ({item}) => {
       </TouchableOpacity>
       {show && (
         <View style={styles.expandable_container}>
-          <Text style={styles.answer}>{item.ans}</Text>
+          <Text style={styles.answer}>{item.answer}</Text>
         </View>
       )}
     </View>

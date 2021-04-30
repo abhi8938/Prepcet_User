@@ -14,6 +14,7 @@ type props = {
   message: string;
   image?: string;
   show: boolean;
+  hide?: () => void;
 };
 
 const Subscription: FunctionComponent<props> = ({
@@ -22,6 +23,7 @@ const Subscription: FunctionComponent<props> = ({
   message,
   image,
   show,
+  hide,
 }) => {
   const globalState: any = useGlobalState();
   const [title, setTitle] = useState('Renew');
@@ -36,11 +38,9 @@ const Subscription: FunctionComponent<props> = ({
     getPackages();
   }, []);
 
-  const [hide, setHide] = useState(true);
   const pack = packages.filter((x: any) => x.type == 'PAID');
-  console.log(pack);
   return (
-    <Modal visible={show && hide} transparent={true}>
+    <Modal visible={show} transparent={true}>
       <View
         style={{
           height: '100%',
@@ -75,11 +75,11 @@ const Subscription: FunctionComponent<props> = ({
               title={title}
               loading={false}
               size={'MEDIUM'}
-              style={{backgroundColor: 'F0F0F0'}}
+              style={{backgroundColor: '#F0F0F0'}}
               touchableProps={{
                 onPress: async () => {
                   (await Buy(navigation, pack[0], true))
-                    ? setHide(false)
+                    ? hide && hide()
                     : null;
                 },
                 disabled: false,
@@ -90,9 +90,9 @@ const Subscription: FunctionComponent<props> = ({
                 title={'Dismiss'}
                 loading={false}
                 size={'MEDIUM'}
-                style={{backgroundColor: 'F0F0F0'}}
+                style={{backgroundColor: '#F0F0F0'}}
                 touchableProps={{
-                  onPress: () => setHide(false),
+                  onPress: () => hide && hide(),
                   disabled: false,
                 }}
               />

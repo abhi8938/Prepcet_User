@@ -35,7 +35,7 @@ type props = {
 };
 const service = new Services();
 const CustomDrawer: FunctionComponent<props> = (props: any) => {
-  const {getUser, policies} = useAuthState();
+  const {policies} = useAuthState();
   const globalState: any = useGlobalState();
   const [showSubscription, setShowSubscription] = useState(false);
   const onPress = (route: any) => {
@@ -86,6 +86,7 @@ const CustomDrawer: FunctionComponent<props> = (props: any) => {
         type={'ABOUTTIME'}
         navigation={props.navigation}
         message={'Please Update Subscription to Access Content'}
+        hide={() => setShowSubscription(false)}
       />
       {render_card(
         ` ${globalState.user && globalState.user.first_name} ${
@@ -96,18 +97,16 @@ const CustomDrawer: FunctionComponent<props> = (props: any) => {
       )}
       {props.state.routes.map((route: any) => {
         return (
-          <>
-            <TouchableHighlight
-              underlayColor={theme.COLORS.HEADER}
-              activeOpacity={0.2}
-              key={`KEY-${route.name}`}
-              style={[styles.drawer_item]}
-              onPress={() => onPress(route)}>
-              <Text style={styles.text}>
-                {route.name === 'Work' ? 'My Work' : route.name}
-              </Text>
-            </TouchableHighlight>
-          </>
+          <TouchableHighlight
+            underlayColor={theme.COLORS.HEADER}
+            activeOpacity={0.2}
+            key={`KEY-${route.name}`}
+            style={[styles.drawer_item]}
+            onPress={() => onPress(route)}>
+            <Text style={styles.text}>
+              {route.name === 'Work' ? 'My Work' : route.name}
+            </Text>
+          </TouchableHighlight>
         );
       })}
       <TouchableHighlight

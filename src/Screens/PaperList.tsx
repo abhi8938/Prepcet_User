@@ -14,11 +14,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../Common/CustomHeader';
 import IonicIcons from 'react-native-vector-icons/Ionicons';
 import {URL} from '../Constants/urls';
-import bg from '../../assets/images/bg.png';
 import theme from '../Constants/theme';
 import {useGlobalState} from '../State/GlobalState';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as Progress from 'react-native-progress';
+import Subscription from '../Components/modals/Subscription';
 
 type props = {
   navigation: any;
@@ -27,6 +27,7 @@ type props = {
 };
 
 const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
+  const [showSubscription, setShowSubscription] = useState(false);
   const globalState: any = useGlobalState();
   const [progress, setProgress] = useState(-1);
   const onSave = async (link: string) => {
@@ -49,6 +50,26 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
       .catch((error) => console.log('download error', error));
   };
   const {id, edit} = route.params;
+  const onPaperRead = async (index: number, item: any) => {
+    if (globalState.subscription.type === 'TRIAL') {
+      if (index >= 1) {
+        setShowSubscription(true);
+      } else {
+        const token = await AsyncStorage.getItem('TOKEN');
+        navigation.navigate('Reader', {
+          uri: `${URL}/paper/files/${item.link}`,
+          token,
+        });
+      }
+    } else {
+      const token = await AsyncStorage.getItem('TOKEN');
+      navigation.navigate('Reader', {
+        uri: `${URL}/paper/files/${item.link}`,
+        token,
+      });
+    }
+  };
+
   const paperView = ({item, index}: {item: any; index: number}) => {
     return (
       <View
@@ -59,6 +80,13 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
           justifyContent: 'space-evenly',
           marginTop: theme.SIZES.large * 2.5,
         }}>
+        <Subscription
+          show={showSubscription}
+          type={'ABOUTTIME'}
+          navigation={navigation}
+          message={'Please Update Subscription to Access Content'}
+          hide={() => setShowSubscription(false)}
+        />
         <TouchableOpacity
           style={
             edit
@@ -76,13 +104,7 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
                     paperIndex: id,
                     paperId: item._id,
                   })
-              : async () => {
-                  const token = await AsyncStorage.getItem('TOKEN');
-                  navigation.navigate('Reader', {
-                    uri: `${URL}/paper/files/${item.link}`,
-                    token,
-                  });
-                }
+              : () => onPaperRead(index, item)
           }>
           <View style={styles.paperView}>
             <Text style={styles.subjectName}>
@@ -135,7 +157,7 @@ const PaperList: FunctionComponent<props> = ({navigation, route, scene}) => {
 
   return (
     <ImageBackground
-      source={bg}
+      source={require('../../assets/images/bg.png')}
       style={styles.parent}
       resizeMode="cover"
       imageStyle={{opacity: 0.05}}>

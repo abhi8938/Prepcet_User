@@ -1,83 +1,16 @@
-import {
-  Alert,
-  FlatList,
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Height, width} from '../../Constants/size';
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {Height} from '../../Constants/size';
+import React, {FunctionComponent} from 'react';
 
 import Icon from '../../Components/common/Icon';
-import IonicIcons from 'react-native-vector-icons/Ionicons';
-import SkeletonLoader from '../SkeletonLoader';
 import Touchable from '../../Components/common/Touchable';
 import theme from '../../Constants/theme';
-import useAuthState from '../../State/AuthState';
+import GIFLoader from '../GIFLoader';
 
 const PackageLoader = () => {
   return (
     <View style={styles.trial}>
-      <View style={{alignSelf: 'center'}}>
-        <SkeletonLoader
-          height={Height * 0.03}
-          width={width * 0.3}
-          borderRadius={9}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-      </View>
-      <View style={{paddingLeft: 15, marginTop: 5}}>
-        <SkeletonLoader
-          height={Height * 0.01}
-          width={width * 0.35}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-        <SkeletonLoader
-          height={Height * 0.01}
-          width={width * 0.25}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-        <SkeletonLoader
-          height={Height * 0.01}
-          width={width * 0.2}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-        <SkeletonLoader
-          height={Height * 0.01}
-          width={width * 0.25}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-        <SkeletonLoader
-          height={Height * 0.01}
-          width={width * 0.35}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-      </View>
-      <View style={{alignSelf: 'center', marginTop: theme.SIZES.large}}>
-        <SkeletonLoader
-          height={Height * 0.04}
-          width={width * 0.2}
-          borderRadius={3}
-          bgColor={theme.COLORS.HEADER}
-          overlayColor={'#fff'}
-        />
-      </View>
+      <GIFLoader style={{alignSelf: 'center'}} />
     </View>
   );
 };

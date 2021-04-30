@@ -15,10 +15,10 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import CustomHeader from '../Common/CustomHeader';
 import ExpandableView from '../Components/common/SyllabusView';
 import ResourceHeader from '../Common/ResourceHeader';
-import bg from '../../assets/images/bg.png';
 import resourcesStore from '../State/resourcesStore';
 import theme from '../Constants/theme';
 import {useGlobalState} from '../State/GlobalState';
+import Subscription from '../Components/modals/Subscription';
 
 type props = {
   navigation?: any;
@@ -26,11 +26,28 @@ type props = {
 };
 const SyllabusScreen: FunctionComponent<props> = ({navigation, scene}) => {
   const iconOnPress = () => navigation.toggleDrawer();
+  const [showSubscription, setShowSubscription] = useState(false);
   const {course} = resourcesStore();
-  const subjects = useGlobalState().subject;
+  const globalState: any = useGlobalState();
+  const subjects = globalState.subject;
+  const onPress = (item: any, index: number) => {
+    if (globalState.subscription.type === 'TRIAL') {
+      if (index >= 2) {
+        setShowSubscription(true);
+      } else {
+        navigation.navigate('SubjectOverview', {
+          subjectData: item,
+        });
+      }
+    } else {
+      navigation.navigate('SubjectOverview', {
+        subjectData: item,
+      });
+    }
+  };
   return (
     <ImageBackground
-      source={bg}
+      source={require('../../assets/images/bg.png')}
       style={styles.parent}
       resizeMode="cover"
       imageStyle={{opacity: 0.03}}>
@@ -40,6 +57,13 @@ const SyllabusScreen: FunctionComponent<props> = ({navigation, scene}) => {
         title={'Resources'}
         nav
         logo
+      />
+      <Subscription
+        show={showSubscription}
+        type={'ABOUTTIME'}
+        navigation={navigation}
+        message={'Please Update Subscription to Access Content'}
+        hide={() => setShowSubscription(false)}
       />
       <View style={{paddingHorizontal: theme.SIZES.small / 2}}>
         <ResourceHeader title={'Syllabus'} />
@@ -51,11 +75,7 @@ const SyllabusScreen: FunctionComponent<props> = ({navigation, scene}) => {
               <ExpandableView
                 key={index}
                 semData={item}
-                onPress={() =>
-                  navigation.navigate('SubjectOverview', {
-                    subjectData: item,
-                  })
-                }
+                onPress={() => onPress(item, index)}
               />
             ))}
           </View>

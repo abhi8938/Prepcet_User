@@ -32,7 +32,7 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
 
   const [netFail, setNetFail] = useState(false);
   const [showSubscription, setShowSubscription] = useState(false);
-  const {getSubjects, getSubscription, getResources} = useAuthState();
+  const {getSubjects, getResources} = useAuthState();
   const globalState: any = useGlobalState();
   const backAction = () => {
     Alert.alert('Hold on!', 'Are you sure you want to go back?', [
@@ -81,6 +81,18 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
       focus();
     };
   }, []);
+  const [showTrialSubscription, setShowTrialSubscription] = useState(false);
+  const onPaperPress = (index: number) => {
+    if (globalState.subscription.type === 'TRIAL') {
+      if (index >= 2) {
+        setShowTrialSubscription(true);
+      } else {
+        navigation.navigate('PaperList', {id: index, edit: true});
+      }
+    } else {
+      navigation.navigate('PaperList', {id: index, edit: true});
+    }
+  };
   return (
     <>
       <ErrorScreen show={netFail} navigation={navigation} scene={scene} />
@@ -90,7 +102,13 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
         navigation={navigation}
         message={'Subscription Expired'}
       />
-
+      <Subscription
+        show={showTrialSubscription}
+        type={'ABOUTTIME'}
+        navigation={navigation}
+        message={'Please Update Subscription to Access Content'}
+        hide={() => setShowTrialSubscription(false)}
+      />
       <ImageBackground
         source={require('../Assets/images/bg.png')}
         style={styles.parent}
@@ -139,9 +157,7 @@ const Home: FunctionComponent = ({navigation, scene}: any) => {
                 load={load}
                 key={index}
                 subject={item}
-                onRead={() =>
-                  navigation.navigate('PaperList', {id: index, edit: true})
-                }
+                onRead={() => onPaperPress(index)}
               />
             ))
           }
