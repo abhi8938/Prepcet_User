@@ -16,7 +16,7 @@ import theme from '../../Constants/theme';
 
 type props = {
   semData: any;
-  onPress: () => {};
+  onPress: () => void;
 };
 
 const ExpandableView: FunctionComponent<props> = ({semData, onPress}) => {

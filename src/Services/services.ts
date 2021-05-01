@@ -317,4 +317,16 @@ export default class services {
       .then((response) => response)
       .catch((error) => error);
   };
+  get_faq = async () => {
+    //Call authenticate api
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+    };
+    return axios
+      .get(URL + '/extras/faqs', {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
 }

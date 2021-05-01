@@ -864,6 +864,15 @@ const useAuthState = () => {
     }
   };
 
+  const getFaq = async (setdata: (data: any) => void) => {
+    const response = await service.get_faq();
+    if (response.status === 200) {
+      setdata(response.data);
+    } else {
+      console.log('Error', `${response.data}`);
+    }
+  };
+
   return {
     getSubscription,
     createSubscription,
@@ -904,6 +913,7 @@ const useAuthState = () => {
     getSubjects,
     getResources,
     setReferralCode,
+    getFaq,
   };
 };
 
