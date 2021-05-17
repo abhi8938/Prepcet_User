@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "prepcet",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -28,7 +28,6 @@
     "axios": "^0.20.0",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-static-fs": "^3.0.0",
-    "epub-cfi-resolver": "^1.0.0",
     "module-resolver": "^1.0.0",
     "react": "16.13.1",
     "react-native": "0.63.3",

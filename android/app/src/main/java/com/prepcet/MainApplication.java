@@ -1,4 +1,4 @@
-package com.prepuni;
+package com.prepcet;
 
 import android.app.Application;
 import android.content.Context;

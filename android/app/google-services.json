@@ -7,6 +7,51 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:313941027963:android:133e6a5d975e95a96186de",
+        "android_client_info": {
+          "package_name": "com.prepcet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313941027963-4k3r24vi03vbnc7fmvfeo7suf61o1tlc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prepcet",
+            "certificate_hash": "572bb9726012a06e32607b46c76a7942dbe5e0c5"
+          }
+        },
+        {
+          "client_id": "313941027963-omp7grnv8os9le9tbp9d0lvbbrmi5dq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv_sKwr-LX7vpbM-92HhyLW1t9RmLdsKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313941027963-omp7grnv8os9le9tbp9d0lvbbrmi5dq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "313941027963-73ckl6i1192lopg3tsq5odbscc72vm9b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.prepuni",
+                "app_store_id": "1546292464"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:313941027963:android:2314d0ae18b7c7016186de",
         "android_client_info": {
           "package_name": "com.prepuni"

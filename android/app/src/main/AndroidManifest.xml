@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.prepuni">
+  package="com.prepcet">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
@@ -26,7 +26,7 @@
           <category android:name="android.intent.category.DEFAULT"/>
           <category android:name="android.intent.category.BROWSABLE"/>
           <data
-            android:host="prepuni.page.link"
+            android:host="prepcet.page.link" 
             android:scheme="https"/>
         </intent-filter>
         <intent-filter>
