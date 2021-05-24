@@ -12,16 +12,12 @@ import {
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 
-import CustomHeader from '../Common/CustomHeader';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import TopNav from '../Components/common/TopNavResources';
 import Touchable from '../Components/common/Touchable';
 import bg from '../../assets/images/bg.png';
-import profileStore from '../Services/profileStore';
 import theme from '../Constants/theme';
-import {useGlobalState} from '../State/GlobalState';
-import useMainState from '../State/MainState';
 import TextField from '../Components/common/TextField';
+import {useSelector} from 'react-redux';
 
 // import KeyValue from '../Components/common/KeyValue';
 
@@ -81,12 +77,12 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
     password_new: {text: '', active: false, error_message: '', show: false},
   });
 
-  const globalState: any = useGlobalState();
+  const user = useSelector((state: any) => state.user.user);
 
   useEffect(() => {
-    console.log('user', globalState.user);
-    if (!globalState.user) return;
-    let y: any = {...globalState.user};
+    console.log('user', user);
+    if (!user) return;
+    let y: any = {...user};
     let x: any = {...data};
     for (var key in y) {
       if (x.hasOwnProperty(key)) {
@@ -100,7 +96,7 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
       }
     }
     setData(x);
-  }, [globalState.user]);
+  }, [user]);
 
   const [register, setRegister] = useState(
     JSON.parse(JSON.stringify(password)),
@@ -124,13 +120,6 @@ const Profile = ({navigation, route}: {navigation: any; route: any}) => {
       style={styles.parent}
       resizeMode="cover"
       imageStyle={{opacity: 0.03}}>
-      <CustomHeader
-        navigation={navigation}
-        scene={route}
-        title={'Profile'}
-        nav
-        logo
-      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: theme.SIZES.large * 2}}>

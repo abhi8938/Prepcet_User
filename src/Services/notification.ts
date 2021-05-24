@@ -4,7 +4,6 @@ import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
-import {useDispatcher} from '../State/GlobalState';
 
 export default class notification {
   async checkHasPermission() {

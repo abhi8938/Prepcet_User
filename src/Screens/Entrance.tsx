@@ -18,11 +18,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Height, width} from '../Constants/size';
 import React, {FunctionComponent, useEffect, useState} from 'react';
+import {getUser, handleAlert} from '../Store/actions/user';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import theme from '../Constants/theme';
-import useAuthState from '../State/AuthState';
+import {useDispatch} from 'react-redux';
 
 type props = {
   navigation: any;
@@ -30,11 +32,14 @@ type props = {
 };
 
 const Entrance: FunctionComponent<props> = ({navigation, route}) => {
-  const {getSubscription, getUser} = useAuthState();
+  const dispatch = useDispatch();
   const size = useSharedValue({
     width: width / 2.5,
     // height: Height / ,
   });
+  const handle_alert = (typeOf: string, message: string) => {
+    dispatch(handleAlert(typeOf, message));
+  };
 
   const validateOtp = async () => {
     const checkExpiry = (code: any) => {
@@ -64,12 +69,12 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
   const isUser = async () => {
     const token = await AsyncStorage.getItem('TOKEN');
     if (token !== null) {
-      await getUser();
-      let subscription = await getSubscription();
-      console.log('subscription', subscription);
-      if (subscription._id === undefined) {
-        return 'Packages';
+      try {
+        await dispatch(getUser());
+      } catch (err) {
+        handle_alert('ERROR', err.message);
       }
+
       return 'Main';
     } else {
       return 'Auth';
@@ -105,7 +110,7 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
   return (
     <>
       {Platform.OS !== 'android' && (
-        <View style={styles.parent}>
+        <SafeAreaView style={styles.parent}>
           <Animated.Image
             style={[
               {
@@ -116,7 +121,7 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
             ]}
             source={require('../Assets/images/prepuni_logo.jpg')}
           />
-        </View>
+        </SafeAreaView>
       )}
     </>
   );

@@ -1,5 +1,6 @@
+import {Image, Modal, View} from 'react-native';
 import React, {FunctionComponent, useEffect} from 'react';
-import {View, Image, Modal} from 'react-native';
+
 import {Height} from '../Constants/size';
 import theme from '../Constants/theme';
 

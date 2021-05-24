@@ -12,7 +12,6 @@ import {
 import {Height, width} from '../../Constants/size';
 import React, {FunctionComponent, useEffect} from 'react';
 
-import CustomHeader from '../../Common/CustomHeader';
 import theme from '../../Constants/theme';
 
 // import connectionError from './images/404Error.png';
@@ -26,7 +25,6 @@ type props = {
 const ErrorScreen: FunctionComponent<props> = ({show, navigation, scene}) => {
   return (
     <Modal animationType="none" transparent={false} visible={show}>
-      <CustomHeader navigation={navigation} scene={scene} />
       <View>
         <View
           style={{

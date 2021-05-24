@@ -1,7 +1,8 @@
 import {Height, width} from '../../Constants/size';
 import React, {FunctionComponent, useEffect} from 'react';
+import {SET_ALERT, handleAlert} from '../../Store/actions/user';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatcher, useGlobalState} from '../../State/GlobalState';
+import {useDispatch, useSelector} from 'react-redux';
 
 import BaseModal from '../common/BaseModal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -10,45 +11,44 @@ import baseStyles from '../common/styles';
 import theme from '../../Constants/theme';
 
 const AlertModal: FunctionComponent = () => {
-  const dispatcher = useDispatcher();
-  //@ts-ignore
-  const globalState: any = useGlobalState();
-  const {type, message, show} = globalState.alert;
+  const alert = useSelector((state: any) => state.user.alert);
+  const dispatch = useDispatch();
   const toggle = () => {
-    dispatcher({
-      type: 'SET-ALERT',
-      payload: {type, message, show: false},
-    });
+    dispatch(handleAlert('NONE', ''));
   };
 
-  const controls = {show, toggle};
+  // useEffect(() => {
+  //   console.log('alert', alert);
+  // }, [alert]);
+
+  const controls = {show: alert.typeOf === 'ERROR', toggle};
   return (
     <BaseModal {...controls}>
       <View style={styles.parent}>
         <View
           style={
-            type === 'ERROR'
+            alert.typeOf === 'ERROR'
               ? [styles.head, {backgroundColor: theme.COLORS.DEFAULT}]
               : [styles.head, {backgroundColor: theme.COLORS.DEFAULT}]
           }>
           <Icon
             size={theme.SIZES.large * 2}
-            name={type === 'ERROR' ? 'times-circle' : 'check-circle'}
+            name={alert.typeOf === 'ERROR' ? 'times-circle' : 'check-circle'}
             color={theme.COLORS.ERROR}
           />
         </View>
         <View style={styles.innerChild}>
-          <Text style={styles.message}>{message}</Text>
+          <Text style={styles.message}>{alert.message}</Text>
           <TouchableOpacity
             onPress={controls.toggle}
             style={
-              type === 'ERROR'
+              alert.typeOf === 'ERROR'
                 ? [styles.buttonErrorStyle, styles.buttonStyle]
                 : [styles.buttonSuccessStyle, styles.buttonStyle]
             }>
             <Text
               style={
-                type === 'ERROR'
+                alert.typeOf === 'ERROR'
                   ? styles.buttonErrorText
                   : styles.buttonSuccessText
               }>
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     width: width * 0.8,
     borderRadius: 5,
     backgroundColor: '#fff',
+    paddingBottom: theme.SIZES.normal,
   },
   head: {
     paddingTop: theme.SIZES.large,

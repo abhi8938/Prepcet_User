@@ -1,61 +1,178 @@
 import {Header, createStackNavigator} from '@react-navigation/stack';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 
-import CustomDrawer from '../Common/CustomDrawer';
-import CustomHeader from '../Common/CustomHeader';
-import DatesheetScreen from '../Screens/DatesheetScreen';
-import Details from '../Screens/Details';
+import AccountScreen from '../Screens/AccountScreen';
+import AllTestScreen from '../Screens/AllTestScreen';
+import BrandName from '../Components/common/BrandName';
+import Chapter from '../Screens/Chapter';
+import Chapters from '../Screens/Chapters';
+import CurrentAffairs from '../Screens/CurrentAffairs';
+import DoubtScreen from '../Screens/DoubtScreen';
+import DoubtsHome from '../Screens/DoubtsHome';
 import Entrance from '../Screens/Entrance';
-import ExaminationCenter from '../Screens/ExaminationCenter';
+import HeaderLeft from './Headers/HeaderLeft';
+import HeaderRight from './Headers/HeaderRight';
 import Home from '../Screens/Home';
-import NotesDescScreen from '../Components/NotesDescScreen';
-import NotesScreen from '../Screens/NotesScreen';
+import HomeSearch from '../Screens/HomeSearch';
+import Icon from '../Components/common/Icon';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MyDoubtsScreen from '../Screens/MyDoubtsScreen';
+import MyResults from '../Screens/MyResults';
+import {NavigationContainer} from '@react-navigation/native';
 import Notification from '../Screens/NotificationScreen';
-import PackageScreen from '../Screens/PackageScreen';
+import Pacakges from '../Screens/Pacakges';
 import Profile from '../Screens/Profile';
+import QRscreen from '../Screens/QRscreen';
 import React from 'react';
-import Reader from '../Screens/Reader';
-import SearchScreen from '../Screens/SearchScreen';
+import ResultScreen from '../Screens/ResultScreen';
+import SearchDoubt from '../Screens/SearchDoubt';
 import SignIn from '../Screens/SignIn';
 import SignUp from '../Screens/SignUp';
-import Subscription from '../Screens/Subscription';
+import Subject from '../Screens/Subject';
+import Subjects from '../Screens/Subjects';
 import Support from '../Screens/Support';
-import SyllabusScreen from '../Screens/SyllabusScreen';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import PaperList from '../Screens/PaperList';
-import SubjectOverviewScreen from '../Screens/SubjectOverviewScreen';
-import QRscreen from '../Screens/QRscreen';
-import {useGlobalState} from '../State/GlobalState';
+import TestListScreen from '../Screens/TestListScreen';
+import TestScreen from '../Screens/TestScreen';
+import WalletScreen from '../Screens/WalletScreen';
+import baseStyles from '../Components/common/styles';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import theme from '../Constants/theme';
 
-const Drawer = createDrawerNavigator();
-
+const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function MainStack() {
-  const globalState: any = useGlobalState();
   return (
-    <Drawer.Navigator
-      openByDefault={false}
-      drawerContent={(props) => (
-        <CustomDrawer {...props} subStatus={globalState.subscription.type} />
-      )}
+    <Tab.Navigator
       initialRouteName="Home"
-      drawerType={'slide'}>
-      <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="Syllabus" component={SyllabusScreen} />
-      {/* <Drawer.Screen name="Subscription" component={Subscription} /> */}
-      <Drawer.Screen name="Center" component={ExaminationCenter} />
-      <Drawer.Screen name="Datesheet" component={DatesheetScreen} />
-      <Drawer.Screen name="Notes" component={NotesScreen} />
-      <Drawer.Screen name="Refer and Earn" component={QRscreen} />
-      <Drawer.Screen name="Support" component={Support} />
-    </Drawer.Navigator>
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color}) => {
+          let iconName = '';
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'md-home' : 'home-outline';
+          } else if (route.name === 'Tests') {
+            iconName = focused ? 'ios-book' : 'ios-book-outline';
+          } else if (route.name === 'Queries') {
+            iconName = focused ? 'reader' : 'reader-outline';
+          } else if (route.name === 'Account') {
+            iconName = focused ? 'md-settings' : 'md-settings-outline';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={25} color={color} />;
+        },
+      })}
+      barStyle={{
+        backgroundColor: theme.COLORS.WHITE,
+      }}
+      activeColor={theme.COLORS.PRIMARY}
+      inactiveColor={theme.COLORS.BORDER_COLOR}>
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Tests" component={TestStack} />
+      <Tab.Screen name="Queries" component={DoubtStack} />
+      <Tab.Screen name="Account" component={AccountStack} />
+    </Tab.Navigator>
+  );
+}
+
+function TestStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="AllTests"
+      screenOptions={{
+        title: 'Mock Tests',
+        headerStyle: styles.headerStyle,
+        headerTintColor: styles.headerTintColor,
+        headerTitleStyle: styles.headerTitleStyle,
+        headerRight: (props) => <HeaderRight {...props} />,
+        headerLeft: (props) => <HeaderLeft {...props} />,
+      }}>
+      <Stack.Screen name="AllTests" component={AllTestScreen} />
+      <Stack.Screen name="TestScreen" component={TestScreen} />
+      <Stack.Screen name="Result" component={ResultScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function AccountStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="MyAccount"
+      screenOptions={{
+        title: 'Account',
+        headerStyle: styles.headerStyle,
+        headerTintColor: styles.headerTintColor,
+        headerTitleStyle: styles.headerTitleStyle,
+        headerRight: (props) => <HeaderRight {...props} />,
+        headerLeft: (props) => <HeaderLeft {...props} />,
+      }}>
+      <Stack.Screen name="MyAccount" component={AccountScreen} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Refer and Earn" component={QRscreen} />
+      <Stack.Screen name="Support" component={Support} />
+      <Stack.Screen name="CurrentAffairs" component={CurrentAffairs} />
+      <Stack.Screen name="MyResults" component={MyResults} />
+      <Stack.Screen name="Search" component={SearchDoubt} />
+    </Stack.Navigator>
+  );
+}
+
+function DoubtStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName={'DoubtsHome'}
+      screenOptions={{
+        title: 'Queries',
+        headerStyle: styles.headerStyle,
+        headerTintColor: styles.headerTintColor,
+        headerTitleStyle: styles.headerTitleStyle,
+        headerRight: (props) => <HeaderRight {...props} />,
+        headerLeft: (props) => <HeaderLeft {...props} />,
+      }}>
+      <Stack.Screen name="Search" component={SearchDoubt} />
+      <Stack.Screen name="DoubtsHome" component={DoubtsHome} />
+      <Stack.Screen name="DoubtScreen" component={DoubtScreen} />
+      <Stack.Screen name="MyDoubts" component={MyDoubtsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: styles.headerStyle,
+        headerTintColor: styles.headerTintColor,
+        headerTitleStyle: styles.headerTitleStyle,
+        headerRight: (props) => <HeaderRight {...props} />,
+        headerLeft: (props) => <HeaderLeft {...props} />,
+      }}>
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={({route}) => ({
+          headerTitle: (props) => <BrandName />,
+        })}
+        initialParams={{name: 'PrepCET'}}
+      />
+      <Stack.Screen name="SearchHome" component={HomeSearch} />
+      <Stack.Screen name="Subjects" component={Subjects} />
+      <Stack.Screen name="Subject" component={Subject} />
+      <Stack.Screen name="Chapters" component={Chapters} />
+      <Stack.Screen name="Chapter" component={Chapter} />
+      <Stack.Screen name="TestScreen" component={TestScreen} />
+      <Stack.Screen name="Result" component={ResultScreen} />
+      <Stack.Screen name="TestList" component={TestListScreen} />
+    </Stack.Navigator>
   );
 }
 
 function AuthStack() {
   return (
-    <Stack.Navigator mode="card" initialRouteName="Signin" headerMode="screen">
+    <Stack.Navigator mode="card" initialRouteName="Signin">
       <Stack.Screen
         name="Signin"
         component={SignIn}
@@ -76,20 +193,31 @@ function AuthStack() {
 
 const Navigation = () => {
   return (
-    <Stack.Navigator initialRouteName="Entrance" headerMode="none">
-      <Stack.Screen name="Main" component={MainStack} />
-      <Stack.Screen name="Details" component={Details} />
-      <Stack.Screen name="Packages" component={PackageScreen} />
-      <Stack.Screen name="Auth" component={AuthStack} />
-      <Stack.Screen name="Reader" component={Reader} />
-      <Stack.Screen name="Notification" component={Notification} />
-      <Stack.Screen name="Entrance" component={Entrance} />
-      <Stack.Screen name="Notesdesc" component={NotesDescScreen} />
-      <Stack.Screen name="PaperList" component={PaperList} />
-      <Stack.Screen name="SubjectOverview" component={SubjectOverviewScreen} />
-      <Stack.Screen name="Search" component={SearchScreen} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Entrance" headerMode="none">
+        <Stack.Screen name="Main" component={MainStack} />
+        <Stack.Screen name="Auth" component={AuthStack} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="Entrance" component={Entrance} />
+        <Stack.Screen name="Wallet" component={WalletScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
 export default Navigation;
+
+const styles = {
+  headerStyle: {
+    backgroundColor: '#fff',
+    height: Platform.OS === 'ios' ? 100 : 55,
+  },
+  headerTintColor: theme.COLORS.BORDER,
+  headerTitleStyle: {
+    fontSize: theme.SIZES.large * 1.4,
+    fontFamily: 'Signika-Medium',
+    color: theme.COLORS.HEADER,
+    marginHorizontal: theme.SIZES.small,
+    marginVertical: theme.SIZES.small / 2,
+  },
+};

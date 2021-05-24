@@ -1,19 +1,20 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text, Share} from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import Icon from 'react-native-vector-icons/Ionicons';
-import CustomHeader from '../Common/CustomHeader';
-import theme from '../Constants/theme';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {Share, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useGlobalState} from '../State/GlobalState';
+import Icon from 'react-native-vector-icons/Ionicons';
+import QRCode from 'react-native-qrcode-svg';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import theme from '../Constants/theme';
+import {useSelector} from 'react-redux';
 
 type props = {
   navigation: any;
   route: any;
 };
 const QRscreen: FunctionComponent<props> = ({navigation, route}) => {
-  const globalState: any = useGlobalState();
+  const user: any = useSelector((state: any) => state.user);
   const [link, setLink] = useState('');
   useEffect(() => {
     AsyncStorage.getItem('shareLink').then((link) => {
@@ -22,7 +23,7 @@ const QRscreen: FunctionComponent<props> = ({navigation, route}) => {
       } else {
         dynamicLinks()
           .buildLink({
-            link: 'https://prepuni.in/' + globalState.user._id,
+            link: 'https://prepuni.in/' + user._id,
             // domainUriPrefix is created in your Firebase console
             domainUriPrefix: 'https://prepuni.page.link',
           })
@@ -54,41 +55,32 @@ const QRscreen: FunctionComponent<props> = ({navigation, route}) => {
     }
   };
   return (
-    <>
-      <View style={styles.parent}>
-        <CustomHeader
-          navigation={navigation}
-          scene={route}
-          title={'Refer'}
-          nav
-          logo
-        />
-        <View style={{marginTop: '9%'}}>
-          {link.length !== 0 && (
-            <QRCode
-              value={link}
-              logo={require('../Assets/images/prepuni_logo.jpg')}
-              logoSize={40}
-              size={200}
-            />
-          )}
-        </View>
-        <View style={styles.shareParent}>
-          <Text style={styles.scanQRText}>Scan this QR code to Refer</Text>
-          <Text style={styles.shareText}>or share this link</Text>
-          <TouchableOpacity style={styles.shareButton} onPress={onShare}>
-            <Icon name={'share-social'} color={theme.COLORS.ACTIVE} size={20} />
-            <Text style={styles.shareButtonText}>Share my referral code</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.discountParent}>
-          <Text style={styles.dicountHead}>Disount Offer</Text>
-          <Text style={styles.discountDesc}>
-            10% discount to your friend who registers
-          </Text>
-        </View>
+    <SafeAreaView style={styles.parent}>
+      <View style={{marginTop: '9%'}}>
+        {link.length !== 0 && (
+          <QRCode
+            value={link}
+            logo={require('../Assets/images/prepuni_logo.jpg')}
+            logoSize={40}
+            size={200}
+          />
+        )}
       </View>
-    </>
+      <View style={styles.shareParent}>
+        <Text style={styles.scanQRText}>Scan this QR code to Refer</Text>
+        <Text style={styles.shareText}>or share this link</Text>
+        <TouchableOpacity style={styles.shareButton} onPress={onShare}>
+          <Icon name={'share-social'} color={theme.COLORS.ACTIVE} size={20} />
+          <Text style={styles.shareButtonText}>Share my referral code</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.discountParent}>
+        <Text style={styles.dicountHead}>Disount Offer</Text>
+        <Text style={styles.discountDesc}>
+          10% discount to your friend who registers
+        </Text>
+      </View>
+    </SafeAreaView>
   );
 };
 

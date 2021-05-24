@@ -1,20 +1,28 @@
 import 'react-native-gesture-handler';
 
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import {Height, width} from './Constants/size';
-import React, {FunctionComponent, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {applyMiddleware, combineReducers, createStore} from 'redux';
 
+import {Alert} from 'react-native';
 import AlertModal from './Components/modals/AlertModal';
 import AppScreens from './Navigation';
-import {GlobalState} from './State/GlobalState';
 import {NavigationContainer} from '@react-navigation/native';
+import {Provider} from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import mainReducer from './Store/reducers/main';
 import messaging from '@react-native-firebase/messaging';
 import notification from './Services/notification';
+import userReducer from './Store/reducers/user';
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   console.log('Message handled in the background!', remoteMessage);
 });
 Alert;
+const rootReducer = combineReducers({
+  user: userReducer,
+  main: mainReducer,
+});
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 const service = new notification();
 const App = ({}) => {
   // const {alert, handleAlert} = useAuthState();
@@ -32,12 +40,10 @@ const App = ({}) => {
   }, []);
 
   return (
-    <GlobalState>
+    <Provider store={store}>
       <AlertModal />
-      <NavigationContainer>
-        <AppScreens />
-      </NavigationContainer>
-    </GlobalState>
+      <AppScreens />
+    </Provider>
   );
 };
 
@@ -50,5 +56,3 @@ function HeadlessCheck({isHeadless}: any) {
 }
 
 export default HeadlessCheck;
-
-const styles = StyleSheet.create({});

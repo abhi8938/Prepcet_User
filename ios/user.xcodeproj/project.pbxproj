@@ -37,7 +37,8 @@
 		94F891FD593B43569E1C0863 /* Signika-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28C981F0F5424FBE991A3F75 /* Signika-Bold.ttf */; };
 		C97779E6516B45EB973CBD60 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C493AFDA1724488B5D681A8 /* Comfortaa-Bold.ttf */; };
 		E29BA5B914574FEBA1265989 /* Signika-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34F69F90BC0D42B6BDE82776 /* Signika-Medium.ttf */; };
-		E58107D926527C6700F484A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E58107D826527C6700F484A9 /* GoogleService-Info.plist */; };
+		E589C2602656891000A1E159 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E589C25F2656891000A1E159 /* File.swift */; };
+		E5C9DC592656682E003EDB74 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */; };
 		E751353912BB41CE9F3376C3 /* ComicNeue-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A40C78F692D49A7912220C7 /* ComicNeue-Regular.ttf */; };
 		E76B4041CA75415A9DBF8296 /* Comfortaa-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F5B2E1A0A0FE45CA9FCF326C /* Comfortaa-Medium.ttf */; };
 		F8B22D96C36D849DBCA2BABE /* libPods-user-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D829674BDFA6A82B5CB7D54 /* libPods-user-tvOSTests.a */; };
@@ -122,7 +123,9 @@
 		DA01D3B53D4342CBB7DD2432 /* Signika-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Signika-Regular.ttf"; path = "../assets/fonts/Signika-Regular.ttf"; sourceTree = "<group>"; };
 		DF04EA6D50984EBA92E2C496 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		E13E56856F00486A8A1F9B38 /* Signika-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Signika-Light.ttf"; path = "../assets/fonts/Signika-Light.ttf"; sourceTree = "<group>"; };
-		E58107D826527C6700F484A9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E589C25E2656891000A1E159 /* user-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "user-Bridging-Header.h"; sourceTree = "<group>"; };
+		E589C25F2656891000A1E159 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E5F68A75260C90110069AB66 /* user.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = user.entitlements; path = user/user.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -239,6 +242,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				E589C25F2656891000A1E159 /* File.swift */,
+				E589C25E2656891000A1E159 /* user-Bridging-Header.h */,
 			);
 			name = user;
 			sourceTree = "<group>";
@@ -283,7 +288,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				E58107D826527C6700F484A9 /* GoogleService-Info.plist */,
+				E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* user */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* userTests */,
@@ -409,7 +414,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = ZNL6497PRR;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1250;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -455,6 +460,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5C9DC592656682E003EDB74 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				C97779E6516B45EB973CBD60 /* Comfortaa-Bold.ttf in Resources */,
@@ -471,7 +477,6 @@
 				3A8D5A39AC8B43A9B34DC233 /* Signika-Light.ttf in Resources */,
 				E29BA5B914574FEBA1265989 /* Signika-Medium.ttf in Resources */,
 				86544DC83F9F4A4DBE57B552 /* Signika-Regular.ttf in Resources */,
-				E58107D926527C6700F484A9 /* GoogleService-Info.plist in Resources */,
 				758473ABB13F45F89A5EA19C /* Signika-SemiBold.ttf in Resources */,
 				6B4AAF01D5214770BBE8046E /* TheStudentsTeacher-Regular.ttf in Resources */,
 				0A27A09E2C824F5496BFC6C6 /* ComicNeue-Bold.ttf in Resources */,
@@ -598,6 +603,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-user-userTests/Pods-user-userTests-resources.sh",
+				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -618,6 +625,8 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -690,6 +699,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-user/Pods-user-resources.sh",
+				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
@@ -710,6 +721,8 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
@@ -832,6 +845,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				E589C2602656891000A1E159 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -873,6 +887,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0F25A5EDD526599C2EFC47D5 /* Pods-user-userTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -896,6 +911,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 74CC07E4694F387A4E0DBD3C /* Pods-user-userTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = userTests/Info.plist;
@@ -933,6 +949,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.digitalluxe.prepcet;
 				PRODUCT_NAME = user;
+				SWIFT_OBJC_BRIDGING_HEADER = "user-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -960,6 +977,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.digitalluxe.prepcet;
 				PRODUCT_NAME = user;
+				SWIFT_OBJC_BRIDGING_HEADER = "user-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

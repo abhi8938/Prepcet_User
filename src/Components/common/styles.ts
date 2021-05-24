@@ -4,10 +4,8 @@ import theme from '../../Constants/theme';
 
 const baseStyles = StyleSheet.create({
   parent: {
-    padding: theme.SIZES.small * 0.3,
-    borderRadius: theme.SIZES.small,
-    margin: theme.SIZES.small - 1,
-    marginHorizontal: theme.SIZES.small,
+    flex: 1,
+    backgroundColor: theme.COLORS.DEFAULT,
   },
   card: {
     backgroundColor: '#F0F0F0',
@@ -55,6 +53,13 @@ const baseStyles = StyleSheet.create({
     shadowOffset: {width: 2, height: 1},
     shadowRadius: 8,
     shadowOpacity: 0.7,
+  },
+  shadow_minimal: {
+    shadowColor: theme.COLORS.BORDER_TEXT,
+    elevation: 2,
+    shadowOffset: {width: 2, height: 1},
+    shadowRadius: 5,
+    shadowOpacity: 0.3,
   },
   button: {
     alignItems: 'center',

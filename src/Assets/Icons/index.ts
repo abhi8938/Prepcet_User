@@ -19,6 +19,10 @@ import Cross_red from './cross_red.svg';
 //@ts-ignore
 import Edit_1 from './edit_1.svg';
 //@ts-ignore
+import Facebook from './facebook.svg';
+//@ts-ignore
+import Google from './google.svg';
+//@ts-ignore
 import LArrow from './arrow_left.svg';
 //@ts-ignore
 import Nav from './nav.svg';
@@ -26,6 +30,8 @@ import Nav from './nav.svg';
 import Navigate from './navigate.svg';
 //@ts-ignore
 import Notification from './notification.svg';
+//@ts-ignore
+import Offer from './offer.svg';
 //@ts-ignore
 import RArrow from './arrow_right.svg';
 //@ts-ignore
@@ -48,7 +54,6 @@ import Tick_green from './tick_green.svg';
 import Trash from './trash.svg';
 //@ts-ignore
 import University from './university.svg';
-
 export default [
   {
     id: 0,
@@ -174,5 +179,20 @@ export default [
     id: 25,
     label: 'UNIVERSITY',
     Icon: University,
+  },
+  {
+    id: 26,
+    label: 'FACEBOOK',
+    Icon: Facebook,
+  },
+  {
+    id: 27,
+    label: 'GOOGLE',
+    Icon: Google,
+  },
+  {
+    id: 27,
+    label: 'OFFER',
+    Icon: Offer,
   },
 ];

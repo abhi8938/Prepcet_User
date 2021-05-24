@@ -4,25 +4,39 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import {Height, width} from '../../Constants/size';
-import React, {FunctionComponent, useEffect, useRef, useState} from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
+import AuthHeader from '../common/AuthHeader';
+import GradientButton from '../GradientButton';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import TextField from '../../Components/common/TextField';
 import Touchable from '../common/Touchable';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import baseStyles from '../common/styles';
-import image from '../../Assets/images/fvu_image.png';
+import image from '../../Assets/images/forgot_password.png';
+import password_image from '../../Assets/images/update_password.png';
 import theme from '../../Constants/theme';
+import verify_image from '../../Assets/images/verify_code.png';
 
 //@ts-ignore
 
 type props = {
-  show: boolean;
+  reset: () => void;
+  load: any;
   onRequest: () => void;
   type: 'EMAIL' | 'OTP' | 'PASSWORD' | 'NONE' | string;
   email?: {
@@ -57,6 +71,7 @@ type props = {
       onBlur: () => void;
       onFocus: () => void;
       error: string;
+      show: boolean;
     };
     passwordAgain: {
       text: string;
@@ -64,14 +79,150 @@ type props = {
       onBlur: () => void;
       onFocus: () => void;
       error: string;
+      show: boolean;
     };
+    handleFvu: (key: any, key1: any, value: any) => void;
     updatePassword: () => void;
   };
-  load: boolean;
+};
+
+const RenderOTP = ({load, otp}: any) => {
+  const otpRef = useRef(null);
+  const [timer, setTimer] = useState(60);
+  const [resend, setResend] = useState(false);
+  // const countDown = () => {
+  //   if (timer > 0) {
+  //     setTimer(timer - 1);
+  //   } else {
+  //     setResend(true);
+  //   }
+  // };
+  // useEffect(() => {
+  //   setTimeout(countDown, 1000);
+  // }, [timer]);
+  useEffect(() => {
+    if (timer > 0) {
+      setTimeout(() => setTimer(timer - 1), 1000);
+    } else {
+      setResend(true);
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    if (load.resend === false) {
+      setResend(false);
+      setTimer(60);
+    }
+  }, [load.resend]);
+
+  useEffect(() => {
+    otpRef.current?.focus();
+  }, [otpRef.current]);
+
+  return (
+    <View style={styles.parent}>
+      <Image
+        style={styles.image}
+        resizeMode="contain"
+        resizeMethod="auto"
+        source={verify_image}
+      />
+      <View style={styles.otpResendContainer}>
+        <Text
+          style={[
+            baseStyles.text.fontFamily,
+            {color: theme.COLORS.BORDER_COLOR},
+          ]}>
+          Didn't Recieve Code?{' '}
+        </Text>
+        <View
+          style={{
+            paddingVertical: theme.SIZES.small,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <Text
+            style={[
+              baseStyles.text.fontFamily,
+              {color: theme.COLORS.BORDER_COLOR},
+            ]}>
+            Resend Code in -{' '}
+          </Text>
+          {!resend && (
+            <Text style={{marginLeft: 20, fontSize: 15}}>
+              {timer > 9 ? `0:${timer}` : `0:0${timer}`}
+            </Text>
+          )}
+          {resend &&
+            (load.resend === true ? (
+              <ActivityIndicator
+                style={{
+                  marginVertical: theme.SIZES.small / 1.5,
+                  marginLeft: theme.SIZES.normal,
+                }}
+                size={Platform.OS === 'ios' ? 40 : 30}
+                color={theme.COLORS.PRIMARY}
+              />
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  otp.resendOTP();
+                }}
+                disabled={load.resend}>
+                <Text
+                  style={[
+                    baseStyles.text,
+                    {
+                      color: theme.COLORS.PRIMARY,
+                      fontSize: theme.SIZES.normal + 2,
+                    },
+                  ]}>
+                  Resend
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </View>
+      </View>
+      <TextField
+        style={styles.inputBox}
+        inputProps={{
+          ref: otpRef,
+          placeholder: 'OTP',
+          onChangeText: otp.onChangeText,
+          value: otp.text,
+          onBlur: otp.onBlur,
+          onFocus: otp.onFocus,
+          keyboardType: 'numeric',
+          maxLength: 6,
+        }}
+        error={otp.error}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: theme.SIZES.normal * 1.5,
+        }}>
+        <GradientButton
+          loading={false}
+          loadingText={'...'}
+          touchableProps={{
+            onPress: () => {
+              otp.verifyOTP();
+            },
+            disabled: load.disable,
+          }}
+          title={'verify'}
+          size={1.7}
+        />
+      </View>
+    </View>
+  );
 };
 
 const FVU: FunctionComponent<props> = ({
-  show,
   onRequest,
   type,
   email,
@@ -79,19 +230,17 @@ const FVU: FunctionComponent<props> = ({
   otp,
   passwords,
   load,
+  reset,
 }) => {
+  const emailRef = useRef(null);
+  useEffect(() => {
+    emailRef.current?.focus();
+  }, [emailRef.current]);
+
   const renderEmail = () => {
     return (
       email && (
         <View style={styles.parent}>
-          <Icon
-            name={'close'}
-            size={37}
-            style={{position: 'absolute', top: 8, right: 14}}
-            onPress={() => {
-              onRequest();
-            }}
-          />
           <Image
             style={styles.image}
             resizeMode="contain"
@@ -101,6 +250,7 @@ const FVU: FunctionComponent<props> = ({
           <TextField
             style={styles.inputBox}
             inputProps={{
+              ref: emailRef,
               placeholder: 'Email',
               onChangeText: email.onChangeText,
               value: email.text,
@@ -124,18 +274,18 @@ const FVU: FunctionComponent<props> = ({
           )}
 
           <View style={styles.rowContainer}>
-            <Pressable
-              onPress={() => email.sendOTP('EMAIL')}
-              style={styles.button}
-              disabled={false}>
-              <Text
-                style={[
-                  baseStyles.text,
-                  {fontSize: theme.SIZES.small + 3, color: theme.COLORS.WHITE},
-                ]}>
-                email
-              </Text>
-            </Pressable>
+            <GradientButton
+              loading={load.vemail}
+              loadingText={'...'}
+              touchableProps={{
+                onPress: () => {
+                  email.sendOTP('EMAIL');
+                },
+                disabled: load.disable,
+              }}
+              title={'email'}
+              size={1.7}
+            />
 
             <Text
               style={[
@@ -144,145 +294,45 @@ const FVU: FunctionComponent<props> = ({
               ]}>
               OR
             </Text>
-            <Pressable
-              onPress={() => email.sendOTP('PHONE')}
-              style={styles.button}
-              disabled={false}>
-              <Text
-                style={[
-                  baseStyles.text,
-                  {fontSize: theme.SIZES.small + 3, color: theme.COLORS.WHITE},
-                ]}>
-                sms
-              </Text>
-            </Pressable>
+            <GradientButton
+              loading={load.vcontact}
+              loadingText={'...'}
+              touchableProps={{
+                onPress: () => {
+                  email.sendOTP('PHONE');
+                },
+                disabled: load.disable,
+              }}
+              title={'sms'}
+              size={1.7}
+            />
           </View>
         </View>
       )
     );
   };
 
-  const renderOTP = () => {
-    const otpRef = useRef(null);
-    const [timer, setTimer] = useState(60);
-    const [resend, setResend] = useState(false);
-    const countDown = () => {
-      if (timer > 0) {
-        setTimer(timer - 1);
-      } else {
-        setResend(true);
-      }
-    };
-    useEffect(() => {
-      setTimeout(countDown, 1000);
-    }, [timer]);
-
-    useEffect(() => {
-      if (load === false) {
-        setResend(false);
-        setTimer(60);
-      }
-    }, [load]);
-
-    useEffect(() => {
-      otpRef.current?.focus();
-    }, []);
-
-    return (
-      <View style={styles.parent}>
-        <Icon
-          name={'close'}
-          size={37}
-          style={{position: 'absolute', top: 8, right: 14}}
-          onPress={() => {
-            onRequest();
-          }}
-        />
-        <Image
-          style={styles.image}
-          resizeMode="contain"
-          resizeMethod="auto"
-          source={image}
-        />
-        <TextField
-          style={styles.inputBox}
-          inputProps={{
-            ref: otpRef,
-            placeholder: 'OTP',
-            onChangeText: otp.onChangeText,
-            value: otp.text,
-            onBlur: otp.onBlur,
-            onFocus: otp.onFocus,
-            keyboardType: 'numeric',
-            maxLength: 6,
-          }}
-          error={otp.error}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: theme.SIZES.normal * 1.5,
-          }}>
-          <Touchable
-            style={styles.button}
-            loading={false}
-            filled
-            title={'Verify'}
-            size={'MEDIUM'}
-            touchableProps={{onPress: otp.verifyOTP, disabled: false}}
-          />
-          {!resend && (
-            <Text style={{marginLeft: 20, fontSize: 15}}>
-              {timer > 9 ? `0:${timer}` : `0:0${timer}`}
-            </Text>
-          )}
-          {resend &&
-            (load === true ? (
-              <ActivityIndicator
-                style={{
-                  marginVertical: theme.SIZES.small / 1.5,
-                  marginLeft: theme.SIZES.normal,
-                }}
-                size={Platform.OS === 'ios' ? 40 : 30}
-                color={theme.COLORS.PRIMARY}
-              />
-            ) : (
-              <Touchable
-                style={styles.button}
-                loading={false}
-                filled
-                title={'Resend'}
-                size={'MEDIUM'}
-                touchableProps={{onPress: otp.resendOTP, disabled: load}}
-              />
-            ))}
-        </View>
-      </View>
-    );
-  };
-
   const renderPassword = () => {
     return (
       passwords && (
-        <View style={[styles.parent, baseStyles.shadow]}>
-          <Icon
-            name={'close'}
-            size={37}
-            style={{position: 'absolute', top: 8, right: 14}}
-            onPress={() => {
-              onRequest();
-            }}
-          />
+        <View style={[styles.parent]}>
           <Image
             style={styles.image}
             resizeMode="contain"
             resizeMethod="auto"
-            source={image}
+            source={password_image}
           />
 
           <TextField
+            secureText={{
+              onToggle: () =>
+                passwords.handleFvu(
+                  'password',
+                  'show',
+                  !passwords.password.show,
+                ),
+              hidden: passwords.password.show,
+            }}
             style={styles.inputBox}
             inputProps={{
               placeholder: 'Password',
@@ -294,6 +344,15 @@ const FVU: FunctionComponent<props> = ({
             error={passwords.password.error}
           />
           <TextField
+            secureText={{
+              onToggle: () =>
+                passwords.handleFvu(
+                  'password_again',
+                  'show',
+                  !passwords.passwordAgain.show,
+                ),
+              hidden: passwords.passwordAgain.show,
+            }}
             style={styles.inputBox}
             inputProps={{
               placeholder: 'confirm Password',
@@ -310,16 +369,15 @@ const FVU: FunctionComponent<props> = ({
               justifyContent: 'center',
               marginTop: theme.SIZES.normal,
             }}>
-            <Touchable
-              style={styles.button}
-              filled
-              loading={false}
+            <GradientButton
+              loading={load.update}
+              loadingText={'...'}
               touchableProps={{
                 onPress: passwords.updatePassword,
-                disabled: false,
+                disabled: load.disable,
               }}
-              title="Update"
-              size={'MEDIUM'}
+              title={'update'}
+              size={1.7}
             />
           </View>
         </View>
@@ -329,20 +387,39 @@ const FVU: FunctionComponent<props> = ({
 
   return (
     <Modal
-      testID={'modal'}
-      backdropOpacity={0.8}
-      backdropColor={theme.COLORS.WHITE}
+      style={styles.modal}
+      backdropOpacity={0.1}
+      backdropColor={theme.COLORS.BORDER_TEXT}
       isVisible={type === 'NONE' ? false : true}
       animationInTiming={400}
       backdropTransitionInTiming={400}
       backdropTransitionOutTiming={400}
       onBackdropPress={() => onRequest()}
-      animationOutTiming={500}>
-      <KeyboardAvoidingView enabled behavior={'position'}>
+      animationOutTiming={500}
+      onSwipeComplete={() => onRequest()}
+      swipeDirection={['down']}>
+      <View style={styles.main}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>
+            {type === 'EMAIL'
+              ? 'Forgot Password'
+              : type === 'OTP'
+              ? 'Verify Code'
+              : 'Update Password'}
+          </Text>
+          <Icon
+            name={'close'}
+            size={37}
+            onPress={() => {
+              reset();
+              onRequest();
+            }}
+          />
+        </View>
         {type === 'EMAIL' ? renderEmail() : null}
-        {type === 'OTP' ? renderOTP() : null}
+        {type === 'OTP' ? <RenderOTP load={load} otp={otp} /> : null}
         {type === 'UPDATE' ? renderPassword() : null}
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };
@@ -350,13 +427,40 @@ const FVU: FunctionComponent<props> = ({
 export default FVU;
 
 const styles = StyleSheet.create({
-  parent: {
+  otpResendContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modal: {
+    margin: 0,
+    flex: 1,
+    backgroundColor: '#ccc',
+    marginTop: theme.SIZES.large * 5,
+  },
+  headerText: {
+    fontSize: theme.SIZES.normal * 1.4,
+    fontFamily: 'Signika-Medium',
+    color: theme.COLORS.BORDER_TEXT,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: theme.SIZES.normal,
+  },
+  main: {
+    flex: 1,
+    backgroundColor: theme.COLORS.WHITE,
+    borderRadius: 8,
     paddingVertical: theme.SIZES.small,
-    backgroundColor: theme.COLORS.LIGHT_GREY,
-    width: width * 0.9,
-    maxWidth: 500,
-    borderRadius: theme.SIZES.small,
+  },
+  parent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    paddingHorizontal: theme.SIZES.normal,
+    backgroundColor: theme.COLORS.WHITE,
   },
   inputBox: {
     width: '100%',
@@ -365,13 +469,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 17,
   },
-  // button: {
-  //   marginTop: theme.SIZES.normal,
-  //   // borderRadius:50
-  // },
+
   image: {
-    width: width * 0.4,
-    height: width * 0.5,
+    width: width * 0.35,
+    height: width * 0.45,
     aspectRatio: 1,
     marginTop: theme.SIZES.large * 2,
     alignSelf: 'center',

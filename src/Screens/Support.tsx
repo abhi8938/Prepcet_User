@@ -12,8 +12,6 @@ import {
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 
-import CustomHeader from '../Common/CustomHeader';
-import Header from '../Common/CustomHeader';
 import {Height} from '../Constants/size';
 /**
  * TODO: Create FAQ Screen
@@ -23,12 +21,9 @@ import {Height} from '../Constants/size';
  */
 import Icon from 'react-native-vector-icons/Ionicons';
 import SupportExpandView from '../Components/common/SupportExpandView';
-import TopNavBar from '../Components/common/TopNavbar';
 import Touchable from '../Components/common/Touchable';
 import {sample_FAQs} from '../Constants/sample';
-import supportStore from '../Services/supportStore';
 import theme from '../Constants/theme';
-import useAuthState from '../State/AuthState';
 
 type props = {
   navigation?: any;
@@ -36,11 +31,10 @@ type props = {
 };
 const Support: FunctionComponent<props> = ({navigation, route}) => {
   const [show, setShow] = useState(false);
-  const {getFaq} = useAuthState();
   const [supportData, setSupportData] = useState<any[]>([]);
-  useEffect(() => {
-    getFaq((data: any) => setSupportData(data));
-  }, []);
+  // useEffect(() => {
+  //   getFaq((data: any) => setSupportData(data));
+  // }, []);
   return (
     <ScrollView
       style={styles.parent}
@@ -50,13 +44,6 @@ const Support: FunctionComponent<props> = ({navigation, route}) => {
         style={{flex: 1, backgroundColor: theme.COLORS.WHITE}}
         resizeMode="cover"
         imageStyle={{opacity: 0.03}}>
-        <CustomHeader
-          navigation={navigation}
-          scene={route}
-          title={'Support'}
-          nav
-          logo
-        />
         <Text style={styles.head}>FAQ?</Text>
         <View style={{paddingHorizontal: theme.SIZES.small}}>
           {supportData.map((item, index) => (

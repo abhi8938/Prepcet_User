@@ -1,357 +1,69 @@
 import {
+  Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Linking,
   Platform,
-  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
+  Vibration,
   View,
 } from 'react-native';
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent, useEffect, useState} from 'react';
+import {
+  Register,
+  VerifyCode,
+  handleAlert,
+  handleControls,
+  handleFVU,
+  handleRegister,
+  loginWithFacebook,
+  resetModal,
+  resetRegister,
+  sendCodeMail,
+  sendCodePhone,
+  setReferralCode,
+  signInGoogle,
+} from '../Store/actions/user';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {useDispatch, useSelector} from 'react-redux';
 
-import AgreementModal from '../Components/modals/AgreementModal';
-import AlertModal from '../Components/modals/AlertModal';
 import AuthHeader from '../Components/common/AuthHeader';
 import {CheckBox} from 'react-native-elements';
-import DateInput from '../Components/DateInput';
 import FVUModal from '../Components/modals/FVU';
-import {Height} from '../Constants/size';
+import GradientButton from '../Components/GradientButton';
 import Icon from '../Components/common/Icon';
-import LogoModal from '../Components/modals/LogoModal';
-import SignupDropdown from '../Components/SignupDropdown';
+import LinearGradient from 'react-native-linear-gradient';
+import OrSection from '../Components/OrSection';
+import SocialAuth from '../Components/SocialAuth';
 import TextField from '../Components/common/TextField';
 import Touchable from '../Components/common/Touchable';
+import User from '../Store/models/user';
 import VerificationInput from '../Components/common/VerificationInput';
 import baseStyles from '../Components/common/styles';
 import theme from '../Constants/theme';
-import useAuthState from '../State/AuthState';
 
 type props = {
   navigation: any;
   route: any;
 };
-const gender = [
-  {
-    label: 'male',
-    value: 'Male',
-  },
-  {
-    label: 'female',
-    value: 'Female',
-  },
-  {
-    label: 'others',
-    value: 'Others',
-  },
-  {
-    label: 'rathernotsay',
-    value: 'Rather Not Say',
-  },
-];
-const FirstPage = ({register, handleRegister}: any) => {
-  const renderGender = () => (
-    <View style={styles.genderContainer}>
-      <Text
-        style={[
-          baseStyles.text,
-          {fontSize: theme.SIZES.normal + 7, marginLeft: theme.SIZES.small / 2},
-        ]}>
-        Select Gender
-      </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          paddingVertical: theme.SIZES.small / 2,
-        }}>
-        {gender.map((item, index) => (
-          <Pressable
-            key={`${item}-${index + 1}`}
-            onPress={() =>
-              handleRegister('gender', 'text', item.value.toUpperCase())
-            }
-            style={[
-              styles.togglePress,
-              register.gender.text === item.value.toUpperCase() &&
-                styles.toggleActive,
-            ]}>
-            <Text
-              style={[
-                styles.toggleText,
-                register.gender.text === item.value.toUpperCase() &&
-                  styles.toggleActive,
-              ]}>
-              {item.value}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-    </View>
-  );
-  return (
-    <View style={styles.viewContainer}>
-      <View>
-        <TextField
-          inputProps={{
-            placeholder: 'First Name',
-            value: register.first_name.text,
-            onChangeText: (text) => handleRegister('first_name', 'text', text),
-            onBlur: () => handleRegister('first_name', 'active', false),
-            onFocus: () => handleRegister('first_name', 'active', true),
-          }}
-          error={register.first_name.error_message}
-        />
-        <TextField
-          inputProps={{
-            placeholder: 'Last Name',
-            value: register.last_name.text,
-            onChangeText: (text) => handleRegister('last_name', 'text', text),
-            onBlur: () => handleRegister('last_name', 'active', false),
-            onFocus: () => handleRegister('last_name', 'active', true),
-          }}
-          error={register.last_name.error_message}
-        />
-        <TextField
-          inputProps={{
-            placeholder: 'User Name',
-            value: register.user_name.text,
-            onChangeText: (text) => handleRegister('user_name', 'text', text),
-            onBlur: () => handleRegister('user_name', 'active', false),
-            onFocus: () => handleRegister('user_name', 'active', true),
-          }}
-          error={register.user_name.error_message}
-        />
-      </View>
-      <View style={{marginTop: theme.SIZES.large}}>{renderGender()}</View>
-    </View>
-  );
-};
-const SecondPage = ({
-  register,
-  handleRegister,
-  handleFVU,
-  sendCodeMail,
-  sendCodePhone,
-  load,
-}: any) => {
-  return (
-    <SafeAreaView style={styles.viewContainer}>
-      <DateInput
-        setdob={(dob) => {
-          if (dob > new Date() || dob.getFullYear() < 1989)
-            return handleRegister(
-              'dob',
-              'error_message',
-              'Invalid Date of birth',
-            );
-          handleRegister('dob', 'text', dob);
-        }}
-      />
-      <View style={{}}>
-        <TextField
-          inputProps={{
-            placeholder: 'Email',
-            value: register.email.text,
-            onChangeText: (text) => {
-              handleRegister('email', 'text', text);
-            },
-            onBlur: () => handleRegister('email', 'active', false),
-            onFocus: () => handleRegister('email', 'active', true),
-            editable: !register.email.verified,
-          }}
-          error={register.email.error_message}
-        />
-        <TextField
-          inputProps={{
-            placeholder: 'Mobile Number',
-            value: register.contact.text,
-            onChangeText: (text) => {
-              handleRegister('contact', 'text', text);
-            },
-            onBlur: () => handleRegister('contact', 'active', false),
-            onFocus: () => handleRegister('contact', 'active', true),
-            editable: !register.contact.verified,
-            maxLength: 10,
-          }}
-          error={register.contact.error_message}
-        />
 
-        <VerificationInput
-          load={load}
-          verified={
-            register.email.verified === true ||
-            register.contact.verified === true
-          }
-          onVerify={(type) => {
-            if (type === 'EMAIL') {
-              if (register.email.text.length === 0) {
-                return handleRegister(
-                  'email',
-                  'error_message',
-                  'email is required',
-                );
-              }
-              if (register.email.error_message.length !== 0) {
-                return;
-              }
-              handleFVU('code', 'type', 'EMAIL-VERIFY');
-              sendCodeMail(register.email.text);
-            } else if (type === 'PHONE') {
-              if (register.contact.text.length === 0) {
-                return handleRegister(
-                  'contact',
-                  'error_message',
-                  'mobile number is required to send otp',
-                );
-              }
-              if (register.contact.error_message.length !== 0) {
-                return;
-              }
-              handleFVU('code', 'type', 'CONTACT-VERIFY');
-              sendCodePhone(register.contact.text);
-            }
-          }}
-        />
-      </View>
-    </SafeAreaView>
-  );
-};
-const ThirdPage = ({
+const FirstPage = ({
   register,
-  handleRegister,
-  getUniversities,
-  lists,
-  getPrograms,
-  getSems,
-  handleLists,
-}: any) => {
-  //TODO: fetch university, college, course, semester - store in state
-  //TODO: handleThirdPage Selections depending on previous select
-  //TODO: NEXT PAGE
-  const getName = (type: string, id: string) => {
-    let data = lists[type];
-    data = data.filter((item: any) => item._id == id);
-    if (data.length !== 0) {
-      return data[0].name;
-    } else {
-      return '';
-    }
-  };
-  useEffect(() => {
-    getUniversities();
-  }, []);
-  return (
-    <ScrollView
-      style={{
-        maxHeight: Height * 0.7,
-        borderWidth: 1,
-        borderRadius: 8,
-        marginHorizontal: theme.SIZES.small,
-        borderColor: theme.COLORS.PRICE_COLOR,
-        paddingVertical: theme.SIZES.small / 3,
-      }}
-      contentContainerStyle={{}}>
-      <Text
-        style={[
-          baseStyles.text,
-          {
-            alignSelf: 'center',
-            fontSize: theme.SIZES.small + 3,
-            width: '85%',
-            textAlign: 'center',
-            color: theme.COLORS.BLACK,
-            marginVertical: theme.SIZES.large,
-          },
-        ]}>
-        This information is required to provide you study material according to
-        your program.
-      </Text>
-      <SignupDropdown
-        disabled={!(lists.universities && lists.universities.length != 0)}
-        onToggle={() => handleRegister('university', 'error_message', '')}
-        error={register.university.error_message}
-        selected={getName('universities', register.university.text)}
-        list={lists.universities}
-        label={'University'}
-        icon={'UNIVERSITY'}
-        onSelected={(selected) => {
-          handleLists('semesters', []);
-          handleRegister('university', 'text', selected);
-          handleRegister('program', 'text', '');
-          handleRegister('semester', 'text', '');
-          getPrograms(selected);
-        }}
-      />
-      <View style={[styles.collegeContainer]}>
-        <Icon
-          type={'COLLEGE'}
-          size={1.6}
-          style={{
-            width: '12%',
-            marginHorizontal: theme.SIZES.small / 1.5,
-          }}
-        />
-        <View>
-          <TextField
-            style={{width: '94%'}}
-            inputProps={{
-              placeholder: 'College',
-              value: register.college.text,
-              onChangeText: (text) => handleRegister('college', 'text', text),
-              onBlur: () => handleRegister('college', 'active', false),
-              onFocus: () => handleRegister('college', 'active', true),
-            }}
-            error={register.college.error_message}
-          />
-        </View>
-      </View>
-      <SignupDropdown
-        onToggle={() => handleRegister('program', 'error_message', '')}
-        disabled={register.university.text.length == 0}
-        error={register.program.error_message}
-        label={'program'}
-        selected={getName('programs', register.program.text)}
-        list={lists.programs}
-        icon={'COURSE'}
-        onSelected={(selected) => {
-          handleRegister('program', 'text', selected);
-          handleRegister('semester', 'text', '');
-          getSems(selected);
-        }}
-      />
-      <SignupDropdown
-        onToggle={() => handleRegister('semester', 'error_message', '')}
-        error={register.semester.error_message}
-        disabled={register.program.text.length == 0}
-        label={
-          getName('universities', register.university.text) ===
-          'Rajasthan University'
-            ? 'Year'
-            : 'Semester'
-        }
-        selected={getName('semesters', register.semester.text)}
-        list={lists.semesters}
-        icon={'SEMESTER'}
-        onSelected={(selected) =>
-          handleRegister('semester', 'text', selected.toString())
-        }
-      />
-    </ScrollView>
-  );
-};
-const FourthPage = ({
-  register,
-  handleRegister,
+  handle_register,
+  load,
   controls,
-  handleControls,
+  control,
   policies,
-  selectPolicy,
+  reset_register,
+  sendCode,
+  handle_FVU,
+  sendCodePhone,
+  sign_up,
+  google_signup,
+  facebook_signup,
 }: any) => {
   const openLink = (url: string) => {
     Linking.canOpenURL(url).then((supported) => {
@@ -362,148 +74,372 @@ const FourthPage = ({
       }
     });
   };
-
   return (
-    <View
-      style={[
-        styles.viewContainer,
-        {justifyContent: 'space-between', marginVertical: theme.SIZES.large},
-      ]}>
-      <View style={{}}>
-        <TextField
-          inputProps={{
-            placeholder: 'Password',
-            value: register.password.text,
-            onChangeText: (text) => {
-              handleRegister('password', 'text', text);
-            },
-            onBlur: () => handleRegister('password', 'active', false),
-            onFocus: () => handleRegister('password', 'active', true),
-          }}
-          secureText={{
-            onToggle: () =>
-              handleRegister('password', 'show', !register.password.show),
-            hidden: register.password.show,
-          }}
-          error={register.password.error_message}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.viewContainer}
+      contentContainerStyle={{paddingBottom: theme.SIZES.large + 5}}>
+      <TextField
+        inputProps={{
+          placeholder: 'First Name',
+          value: register.first_name.text,
+          onChangeText: (text) => handle_register('first_name', 'text', text),
+          onBlur: () => handle_register('first_name', 'active', false),
+          onFocus: () => handle_register('first_name', 'active', true),
+        }}
+        error={register.first_name.error_message}
+      />
+      <TextField
+        inputProps={{
+          placeholder: 'Last Name',
+          value: register.last_name.text,
+          onChangeText: (text) => handle_register('last_name', 'text', text),
+          onBlur: () => handle_register('last_name', 'active', false),
+          onFocus: () => handle_register('last_name', 'active', true),
+        }}
+        error={register.last_name.error_message}
+      />
+      <TextField
+        inputProps={{
+          placeholder: 'Email',
+          value: register.email.text,
+          onChangeText: (text) => {
+            handle_register('email', 'text', text);
+          },
+          onBlur: () => handle_register('email', 'active', false),
+          onFocus: () => handle_register('email', 'active', true),
+          editable: !register.email.verified,
+        }}
+        error={register.email.error_message}
+        verify={{
+          onPress: () => {
+            if (register.email.text.length === 0) {
+              return handle_register(
+                'email',
+                'error_message',
+                'email is required',
+              );
+            }
+            if (register.email.error_message.length !== 0) {
+              return;
+            }
+            handle_FVU('input_otp', 'type', 'EMAIL-VERIFY');
+            sendCode(register.email.text);
+          },
+          load: load.vemail,
+          verified: register.email.verified,
+        }}
+      />
+      <TextField
+        inputProps={{
+          placeholder: 'Mobile Number (Optional)',
+          value: register.contact.text,
+          onChangeText: (text) => {
+            handle_register('contact', 'text', text);
+          },
+          onBlur: () => handle_register('contact', 'active', false),
+          onFocus: () => handle_register('contact', 'active', true),
+          editable: !register.contact.verified,
+          maxLength: 10,
+        }}
+        verify={{
+          onPress: () => {
+            if (register.email.text.length === 0) {
+              return handle_register(
+                'contact',
+                'error_message',
+                'email is required',
+              );
+            }
+            if (register.email.error_message.length !== 0) {
+              return;
+            }
+            handle_FVU('input_otp', 'type', 'CONTACT-VERIFY');
+            sendCodePhone(register.contact.text);
+          },
+          load: load.vcontact,
+          verified: register.contact.verified,
+        }}
+        error={register.contact.error_message}
+      />
+
+      <TextField
+        inputProps={{
+          placeholder: 'Password',
+          value: register.password.text,
+          onChangeText: (text) => {
+            handle_register('password', 'text', text);
+          },
+          onBlur: () => handle_register('password', 'active', false),
+          onFocus: () => handle_register('password', 'active', true),
+        }}
+        secureText={{
+          onToggle: () =>
+            handle_register('password', 'show', !register.password.show),
+          hidden: register.password.show,
+        }}
+        error={register.password.error_message}
+      />
+      <TextField
+        inputProps={{
+          placeholder: 'Re-enter Password',
+          value: register.password_again.text,
+          onChangeText: (text) => {
+            handle_register('password_again', 'text', text);
+          },
+          onBlur: () => handle_register('password_again', 'active', false),
+          onFocus: () => handle_register('password_again', 'active', true),
+        }}
+        secureText={{
+          onToggle: () =>
+            handle_register(
+              'password_again',
+              'show',
+              !register.password_again.show,
+            ),
+          hidden: register.password_again.show,
+        }}
+        error={register.password_again.error_message}
+      />
+      {/* <View style={styles.checkBoxes}> */}
+      <View style={styles.NameContainer}>
+        <CheckBox
+          checkedColor={theme.COLORS.ACTIVE}
+          containerStyle={styles.headCheckBox}
+          disabled={false}
+          checked={controls.agree}
+          onPress={() => control('agree', !controls.agree)}
         />
-        <TextField
-          inputProps={{
-            placeholder: 'Re-enter Password',
-            value: register.password_again.text,
-            onChangeText: (text) => {
-              handleRegister('password_again', 'text', text);
-            },
-            onBlur: () => handleRegister('password_again', 'active', false),
-            onFocus: () => handleRegister('password_again', 'active', true),
-          }}
-          secureText={{
-            onToggle: () =>
-              handleRegister(
-                'password_again',
-                'show',
-                !register.password_again.show,
-              ),
-            hidden: register.password_again.show,
-          }}
-          error={register.password_again.error_message}
-        />
-      </View>
-      <View style={styles.checkBoxes}>
-        <View style={styles.NameContainer}>
-          <CheckBox
-            checkedColor={theme.COLORS.ACTIVE}
-            containerStyle={styles.headCheckBox}
-            disabled={false}
-            checked={controls.tnc}
-            onPress={() => handleControls('tnc', !controls.tnc)}
-          />
-          <Text style={styles.head_text}>
-            <Text style={{color: theme.COLORS.HEADER}}>I hereby, </Text>Read and
-            Accept All Conditions and Policies{' '}
-            <Text style={{color: theme.COLORS.HEADER}}>
-              presented by PrepUni
-            </Text>
-          </Text>
-        </View>
-        <View style={styles.linkContainer}>
-          <View
+        <Text style={styles.head_text}>
+          <Text
             style={{
-              marginTop: -64,
-              backgroundColor: theme.COLORS.HEADER,
-              height: 200,
-              width: 1.5,
-            }}
-          />
-          <View>
-            {policies.map((item: any, index: number) => (
-              <View
-                key={index}
-                style={{
-                  marginStart: -0.5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  height: 30,
-                }}>
-                <View
-                  style={{
-                    backgroundColor: theme.COLORS.HEADER,
-                    height: 1.5,
-                    width: 12,
-                  }}
-                />
-                <Text style={styles.link} onPress={() => openLink(item.link)}>
-                  {item.name}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </View>
+              color: theme.COLORS.HEADER,
+            }}>
+            I hereby,{' '}
+          </Text>
+          <Text
+            onPress={() =>
+              openLink('https://digitalluxe.in/documents/terms_conditions.pdf')
+            }
+            style={{
+              textDecorationLine: 'underline',
+              textDecorationColor: theme.COLORS.PRIMARY,
+            }}>
+            Read and Accept All Conditions and Policies
+          </Text>
+          <Text style={{color: theme.COLORS.HEADER}}>
+            {' '}
+            presented by PrepUni.
+          </Text>
+        </Text>
       </View>
-    </View>
+      <View
+        style={[styles.buttonContainer, {paddingVertical: theme.SIZES.small}]}>
+        <GradientButton
+          loading={load.signup}
+          loadingText={'...'}
+          touchableProps={{
+            onPress: sign_up,
+            disabled: load.disable,
+          }}
+          title={'Sign Up'}
+          size={1.7}
+        />
+        <TouchableOpacity
+          onPress={() => reset_register()}
+          disabled={load.disable}>
+          <LinearGradient
+            colors={['#F6CE65', '#FAB378', '#FDA085']}
+            style={styles.reset}>
+            <Icon type={'RESET'} size={0.9} />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+      <OrSection title={'Sign Up'} />
+      <SocialAuth
+        onFacebook={() => google_signup()}
+        onGoogle={() => facebook_signup()}
+        load={load}
+        type={'REGISTER'}
+      />
+    </ScrollView>
   );
 };
+
 const SignUp: FunctionComponent<props> = ({navigation, route}) => {
-  const {
-    load,
-    handlePageChange,
-    controls,
-    handleRegister,
-    handleControls,
-    FVU,
-    handleFVU,
-    VerifyCode,
-    sendCodeMail,
-    sendCodePhone,
-    SignUp,
-    alert,
-    handleAlert,
-    lists,
-    getPrograms,
-    getUniversities,
-    getSems,
-    logoModal,
-    resetModal,
-    resetRegister,
-    register,
-    policies,
-    selectPolicy,
-    handleLists,
-    setReferralCode,
-  } = useAuthState();
-  // const test = useAuthState();
-  // let data = test.register;
-  // const [register, setRegister] = useState(returnRegister());
-  // useEffect(() => {
-  //   console.log(register);
-  //   setRegister(returnRegister());
-  // }, [data]);
+  const register = useSelector((state: any) => state.user.register);
+  const [load, setLoad] = useState({
+    signup: false,
+    vemail: false,
+    vcontact: false,
+    disable: false,
+    resend: false,
+    google: false,
+    facebook: false,
+  });
+
+  const [error, setError] = useState(null);
+
+  const handleLoad = (
+    key:
+      | 'vemail'
+      | 'vcontact'
+      | 'signup'
+      | 'disable'
+      | 'resend'
+      | 'google'
+      | 'facebook',
+    value: boolean,
+  ) => {
+    let x: any = {...load};
+    x[key] = value;
+    if (key === 'vemail' || key === 'vcontact') {
+      x['resend'] = value;
+    }
+    for (let k in x) {
+      if (k !== 'disable' && x[k] === true) {
+        x['disable'] = true;
+        break;
+      }
+    }
+    setLoad(x);
+  };
+  const controls = useSelector((state: any) => state.user.controls);
+  const FVU = useSelector((state: any) => state.user.FVU);
+  const policies = useSelector((state: any) => state.user.policies);
+  const dispatch = useDispatch();
+  const handleInput = (key: any, key1: any, value: any) => {
+    dispatch(handleRegister(key, key1, value));
+  };
+  const control = (key: any, value: any) => {
+    dispatch(handleControls(key, value));
+  };
+  const handle_fvu = (key: any, key1: any, value: any) => {
+    dispatch(handleFVU(key, key1, value));
+  };
+
+  const reset_register = () => {
+    dispatch(resetRegister());
+  };
+  const handle_alert = (typeOf: string, message: string) => {
+    dispatch(handleAlert(typeOf, message));
+  };
+  const send_code_mail = async (email: string) => {
+    try {
+      handleLoad('vemail', true);
+      await dispatch(sendCodeMail(email, 'EMAIL-VERIFY'));
+      handleLoad('vemail', false);
+    } catch (err) {
+      handleLoad('vemail', false);
+      setError(err.message);
+      handle_alert('ERROR', err.message);
+    }
+  };
+  const send_code_phone = async (contact: string) => {
+    try {
+      handleLoad('vcontact', true);
+      await dispatch(sendCodePhone(contact, 'CONTACT-VERIFY'));
+      handleLoad('vcontact', false);
+    } catch (err) {
+      handleLoad('vcontact', false);
+      setError(err.message);
+      handle_alert('ERROR', err.message);
+    }
+  };
+
+  const set_referal = (value: string) => {
+    dispatch(setReferralCode(value));
+  };
+  const verify_code = () => {
+    dispatch(VerifyCode());
+  };
+  const handle_controls = (key: any, value: any) => {
+    dispatch(handleControls(key, value));
+  };
+  const reset_modal = () => {
+    dispatch(resetModal());
+  };
+  const signup = async () => {
+    try {
+      let error_signup = false;
+      //*Validate Data Register
+      for (let key in register) {
+        if (register[key].error_message.length !== 0) {
+          Vibration.vibrate();
+          error_signup = true;
+          throw new Error(register[key].error_message);
+        }
+
+        if (key !== 'contact' && register[key].text.length === 0) {
+          dispatch(handleRegister(key, 'error_message', `${key} is required`));
+          Vibration.vibrate();
+          error_signup = true;
+          break;
+        }
+        if (key === 'email' && register[key].verified === false) {
+          Vibration.vibrate();
+          error_signup = true;
+          throw new Error('Please Verify ' + key);
+        }
+        if (
+          key === 'contact' &&
+          register[key].text.length !== 0 &&
+          register[key].verified === false
+        ) {
+          Vibration.vibrate();
+          error_signup = true;
+          throw new Error('Please Verify ' + key);
+        }
+        if (controls.agree === false) {
+          Vibration.vibrate();
+          error_signup = true;
+          throw new Error('Please Agree to our terms and conditions');
+        }
+      }
+      if (error_signup === true) return;
+
+      let userData = new User(
+        `${register.first_name.text} ${register.last_name.text}`,
+        register.email.text.toLowerCase(),
+        register.password.text,
+        'EMAIL',
+        register.contact.text,
+      );
+      handleLoad('signup', true);
+      await dispatch(Register(navigation, userData));
+      handleLoad('signup', false);
+    } catch (err) {
+      handleLoad('signup', false);
+      setError(err.message);
+      handle_alert('ERROR', err.message);
+    }
+  };
   useEffect(() => {
     if (route.params?.referal) {
       console.log('params', route.params.referal);
-      setReferralCode(route.params.referal);
+      set_referal(route.params.referal);
     }
   }, [route.params]);
+  const google_signin = async () => {
+    try {
+      handleLoad('google', true);
+      await dispatch(signInGoogle(navigation));
+      handleLoad('google', false);
+    } catch (err) {
+      handleLoad('google', false);
+      handle_alert('ERROR', err.message);
+    }
+  };
+  const facebook_signin = async () => {
+    try {
+      handleLoad('facebook', true);
+      await dispatch(loginWithFacebook(navigation));
+      handleLoad('facebook', false);
+    } catch (err) {
+      handleLoad('facebook', false);
+      handle_alert('ERROR', err.message);
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -514,8 +450,6 @@ const SignUp: FunctionComponent<props> = ({navigation, route}) => {
         source={require('../Assets/images/bg.png')}
         style={{
           flex: 1,
-
-          paddingBottom: theme.SIZES.normal,
         }}
         resizeMode="cover"
         imageStyle={{opacity: 0.03}}>
@@ -523,121 +457,42 @@ const SignUp: FunctionComponent<props> = ({navigation, route}) => {
           backgroundColor={theme.COLORS.DEFAULT}
           barStyle={'dark-content'}
         />
-        <AuthHeader
-          back={controls.page === 1 ? true : false}
-          pageTitle={'Sign In'}
-          navigation={navigation}
-        />
+        <AuthHeader back={true} pageTitle={'Sign In'} navigation={navigation} />
 
         <KeyboardAvoidingView
-          enabled={controls.page === 4 ? false : true}
+          enabled={true}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 0.95}}
+          style={{flex: 1}}
           contentContainerStyle={{
             backgroundColor: theme.COLORS.DEFAULT,
           }}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 5 : 0}>
-          {controls.page === 1 ? (
-            <FirstPage register={register} handleRegister={handleRegister} />
-          ) : null}
-          {controls.page === 2 ? (
-            <SecondPage
-              register={register}
-              handleRegister={handleRegister}
-              handleFVU={handleFVU}
-              sendCodeMail={sendCodeMail}
-              sendCodePhone={sendCodePhone}
-              load={load}
-            />
-          ) : null}
-          {controls.page === 3 ? (
-            <ThirdPage
-              register={register}
-              handleRegister={handleRegister}
-              getUniversities={getUniversities}
-              getPrograms={getPrograms}
-              getSems={getSems}
-              lists={lists}
-              handleLists={handleLists}
-            />
-          ) : null}
-          {controls.page === 4 ? (
-            <FourthPage
-              register={register}
-              handleRegister={handleRegister}
-              controls={controls}
-              handleControls={handleControls}
-              policies={policies}
-              selectPolicy={selectPolicy}
-            />
-          ) : null}
-        </KeyboardAvoidingView>
-
-        <View style={styles.buttonContainer}>
-          <Touchable
-            touchableProps={{
-              onPress: () => handlePageChange('PREVIOUS'),
-              disabled: load,
-            }}
-            loading={false}
-            filled={true}
-            title={'Previous'}
-            size={'LARGE'}
-            style={{width: '30%'}}
+          <FirstPage
+            register={register}
+            handle_register={handleInput}
+            controls={controls}
+            load={load}
+            control={control}
+            policies={policies}
+            reset_register={reset_register}
+            sendCode={(email: string) => send_code_mail(email)}
+            sendCodePhone={(phone: string) => send_code_phone(phone)}
+            handle_FVU={handle_fvu}
+            sign_up={signup}
+            google_signup={google_signin}
+            facebook_signup={facebook_signin}
           />
-
-          <TouchableOpacity
-            onPress={() => resetRegister()}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: theme.SIZES.small / 1.1,
-              paddingVertical: theme.SIZES.small / 1.1,
-              marginVertical: theme.SIZES.small,
-              marginHorizontal: theme.SIZES.small,
-              borderRadius: 50,
-              elevation: 3,
-              backgroundColor: theme.COLORS.PRIMARY,
-            }}>
-            <Icon type={'RESET'} size={0.9} />
-          </TouchableOpacity>
-
-          {controls.page !== 4 ? (
-            <Touchable
-              touchableProps={{
-                onPress: () => handlePageChange('NEXT'),
-                disabled: load,
-              }}
-              filled={true}
-              loading={false}
-              title={'Next'}
-              size={'LARGE'}
-              style={{width: '30%'}}
-            />
-          ) : (
-            <Touchable
-              touchableProps={{
-                onPress: () => SignUp(navigation),
-                disabled: load,
-              }}
-              filled={true}
-              loading={load}
-              title={'Sign up'}
-              size={'LARGE'}
-              style={{width: '30%'}}
-            />
-          )}
-        </View>
+        </KeyboardAvoidingView>
         <FVUModal
-          show={controls.FVU == 'NONE' ? false : true}
-          onRequest={() => resetModal()}
-          type={controls.FVU}
+          reset={reset_modal}
           load={load}
+          onRequest={() => handle_controls('FVU', 'NONE')}
+          type={controls.FVU}
           otp={{
             resendOTP: () => {
-              if (FVU.code.type === 'EMAIL-VERIFY') {
+              if (FVU.input_otp.type === 'EMAIL-VERIFY') {
                 if (register.email.text.length === 0) {
-                  return handleRegister(
+                  return handleInput(
                     'email',
                     'error_message',
                     'email is required',
@@ -646,10 +501,10 @@ const SignUp: FunctionComponent<props> = ({navigation, route}) => {
                 if (register.email.error_message.length !== 0) {
                   return;
                 }
-                sendCodeMail(register.email.text);
-              } else if (FVU.code.type === 'CONTACT-VERIFY') {
+                send_code_mail(register.email.text);
+              } else if (FVU.input_otp.type === 'CONTACT-VERIFY') {
                 if (register.contact.text.length === 0) {
-                  return handleRegister(
+                  return handleInput(
                     'contact',
                     'error_message',
                     'mobile number is required to send otp',
@@ -658,19 +513,18 @@ const SignUp: FunctionComponent<props> = ({navigation, route}) => {
                 if (register.contact.error_message.length !== 0) {
                   return;
                 }
-                sendCodePhone(register.contact.text);
+                send_code_phone(register.contact.text);
               }
             },
-            type: FVU.code.type,
-            text: FVU.code.text,
-            onChangeText: (otp: string) => handleFVU('code', 'text', otp),
-            verifyOTP: VerifyCode,
-            onBlur: () => handleFVU('code', 'active', false),
-            onFocus: () => handleFVU('code', 'active', true),
-            error: FVU.code.error_message,
+            type: FVU.input_otp.type,
+            text: FVU.input_otp.text,
+            onChangeText: (otp: string) => handle_fvu('input_otp', 'text', otp),
+            verifyOTP: () => verify_code(),
+            onBlur: () => handle_fvu('input_otp', 'active', false),
+            onFocus: () => handle_fvu('input_otp', 'active', true),
+            error: FVU.input_otp.error_message,
           }}
         />
-        <LogoModal show={logoModal} />
       </ImageBackground>
     </SafeAreaView>
   );
@@ -679,6 +533,17 @@ const SignUp: FunctionComponent<props> = ({navigation, route}) => {
 export default SignUp;
 
 const styles = StyleSheet.create({
+  reset: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.SIZES.small / 1.1,
+    paddingVertical: theme.SIZES.small / 1.1,
+    marginVertical: theme.SIZES.small,
+    marginHorizontal: theme.SIZES.small,
+    borderRadius: 50,
+    elevation: 3,
+    backgroundColor: theme.COLORS.PRIMARY,
+  },
   collegeContainer: {
     width: '96.5%',
     flexDirection: 'row',
@@ -704,9 +569,7 @@ const styles = StyleSheet.create({
   //   backgroundColor: theme.COLORS.DEFAULT,
   // },
   viewContainer: {
-    flex: 0.95,
-    justifyContent: 'space-evenly',
-    paddingVertical: theme.SIZES.normal,
+    flex: 1,
     paddingHorizontal: theme.SIZES.small,
   },
   rowContainer: {
@@ -754,6 +617,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: theme.SIZES.small,
   },
   linkContainer: {
     flexDirection: 'row',
@@ -776,7 +640,9 @@ const styles = StyleSheet.create({
   NameContainer: {
     width: '100%',
     flexDirection: 'row',
-    height: 90,
+    paddingVertical: theme.SIZES.large,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   headCheckBox: {
     padding: 0,
@@ -786,6 +652,7 @@ const styles = StyleSheet.create({
     fontSize: theme.SIZES.normal * 1.1,
     fontFamily: 'Signika-SemiBold',
     width: '80%',
+    maxWidth: 600,
     letterSpacing: 1,
     color: theme.COLORS.ACTIVE,
   },

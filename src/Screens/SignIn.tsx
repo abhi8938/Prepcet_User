@@ -14,75 +14,208 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Vibration,
   View,
 } from 'react-native';
-import {Height, width} from '../Constants/size';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import {
+  Login,
+  UpdatePassword,
+  VerifyCode,
+  handleAlert,
+  handleControls,
+  handleFVU,
+  handleLogin,
+  loginWithFacebook,
+  resetModal,
+  sendCodeMail,
+  sendCodePhone,
+  signInGoogle,
+} from '../Store/actions/user';
 import React, {FunctionComponent, useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
-import AlertModal from '../Components/modals/AlertModal';
 import AuthHeader from '../Components/common/AuthHeader';
 import ErrorScreen from '../Components/common/ErrorScreen';
-import FVU from '../Components/modals/FVU';
 import FVUModal from '../Components/modals/FVU';
-import LogoModal from '../Components/modals/LogoModal';
+import GradientButton from '../Components/GradientButton';
+import {Height} from '../Constants/size';
 import NetInfo from '@react-native-community/netinfo';
+import OrSection from '../Components/OrSection';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Slider from '../Components/Slider';
 import Snackbar from 'react-native-snackbar';
+import SocialAuth from '../Components/SocialAuth';
 import TextField from '../Components/common/TextField';
 import Touchable from '../Components/common/Touchable';
+import {WEB_CLIENT_ID} from '../Constants/urls';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {log} from 'react-native-reanimated';
 import theme from '../Constants/theme';
-import useAuthState from '../State/AuthState';
 
 type props = {
   navigation: any;
   scene: any;
-  page: string;
 };
 
-// Custom Slider Content ( Images and label)
-const Slider_content = [
-  {
-    image: require('../Assets/images/study_session_report.png'),
-    label: 'Smart Search',
-  },
-  {
-    image: require('../../assets/images/annotations.png'),
-    label: 'Bookmarks',
-  },
-  {
-    image: require('../../assets/images/reminder.png'),
-    label: 'Dictionary',
-  },
-  {
-    image: require('../../assets/images/result.png'),
-    label: 'Syllabus',
-  },
-  {
-    image: require('../Assets/images/datesheet.png'),
-    label: 'Datesheet',
-  },
-];
+const SignIn: FunctionComponent<props> = ({navigation, scene}) => {
+  const [load, setLoad] = useState({
+    vemail: false,
+    vcontact: false,
+    update: false,
+    resend: false,
+    signin: false,
+    google: false,
+    facebook: false,
+    disable: false,
+  });
+  const [social, setSocial]: any = useState('NONE');
 
-const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
-  const {
-    logoModal,
-    load,
-    FVU,
-    controls,
-    login,
-    SignIn,
-    handleLogin,
-    handleFVU,
-    handleControls,
-    VerifyCode,
-    sendCodeMail,
-    sendCodePhone,
-    UdpatePassword,
-    resetModal,
-  } = useAuthState();
+  const handleLoad = (
+    key:
+      | 'vemail'
+      | 'vcontact'
+      | 'update'
+      | 'resend'
+      | 'signin'
+      | 'google'
+      | 'facebook'
+      | 'disable',
+    value: boolean,
+  ) => {
+    let x: any = {...load};
+    x[key] = value;
+    if (key === 'vemail' || key === 'vcontact') {
+      x['resend'] = value;
+    }
+    for (let k in x) {
+      if (k !== 'disable' && x[k] === true) {
+        x['disable'] = true;
+        break;
+      }
+    }
+    setLoad(x);
+  };
+  const login = useSelector((state: any) => state.user.login);
+  const [error, setError] = useState(null);
+  const controls = useSelector((state: any) => state.user.controls);
+  const FVU = useSelector((state: any) => state.user.FVU);
+  const user = useSelector((state: any) => state.user.user);
+  const dispatch = useDispatch();
+  const handle_alert = (typeOf: string, message: string) => {
+    dispatch(handleAlert(typeOf, message));
+  };
+  const handleInput = (key: any, key1: any, value: any) => {
+    dispatch(handleLogin(key, key1, value));
+  };
+  const control = (key: any, value: any) => {
+    dispatch(handleControls(key, value));
+  };
+  const handle_fvu = (key: any, key1: any, value: any) => {
+    dispatch(handleFVU(key, key1, value));
+  };
+  const reset_modal = () => {
+    dispatch(resetModal());
+  };
+  const send_code_mail = async (email: string) => {
+    try {
+      handleLoad('vemail', true);
+      await dispatch(sendCodeMail(email, 'EMAIL-RESET'));
+      handleLoad('vemail', false);
+    } catch (err) {
+      handleLoad('vemail', false);
+      setError(err.message);
+      Snackbar.show({
+        text: err.message,
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: theme.COLORS.ERROR,
+      });
+    }
+  };
+  const send_code_phone = async (contact: string) => {
+    try {
+      handleLoad('vcontact', true);
+      await dispatch(sendCodePhone(contact, 'CONTACT-RESET'));
+      handleLoad('vcontact', false);
+    } catch (err) {
+      handleLoad('vcontact', false);
+      setError(err.message);
+      Snackbar.show({
+        text: err.message,
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: theme.COLORS.ERROR,
+      });
+    }
+  };
+  const update_password = async (password: string) => {
+    try {
+      if (password.length === 0) {
+        handle_fvu('password', 'error_message', 'Password is empty');
+        Vibration.vibrate();
+        throw new Error('Password is empty');
+      }
+      if (FVU.password.error_message.length !== 0) {
+        Vibration.vibrate();
+        throw new Error(FVU.password.error_message);
+      }
+      if (FVU.password_again.error_message.length !== 0) {
+        Vibration.vibrate();
+        throw new Error(FVU.password_again.error_message);
+      }
+      handleLoad('update', true);
+      await dispatch(UpdatePassword(password, FVU.email.text.toLowerCase()));
+      handleLoad('update', false);
+    } catch (error) {
+      setError(error.message);
+      handleLoad('update', false);
+      Snackbar.show({
+        text: error.message,
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: theme.COLORS.ERROR,
+      });
+    }
+  };
+  const verify_code = () => {
+    dispatch(VerifyCode());
+  };
+  const handle_controls = (key: any, value: any) => {
+    dispatch(handleControls(key, value));
+  };
+  const signin = async () => {
+    try {
+      if (login.id.text.length === 0 || login.password.text.length === 0)
+        throw new Error(
+          `${
+            login.id.text.length === 0 ? 'Email / Contact' : 'password'
+          } is empty`,
+        );
+      if (
+        login.id.error_message.length !== 0 &&
+        login.password.error_message.length !== 0
+      )
+        throw new Error(
+          `${
+            login.id.error_message.length === 0
+              ? login.id.error_message
+              : login.password.error_message
+          }`,
+        );
+      let loginData = {
+        id: login.id.text.toLowerCase(),
+        password: login.password.text,
+      };
+      console.log('loginData', loginData);
+      handleLoad('signin', true);
+      await dispatch(Login(navigation, loginData));
+      handleLoad('signin', false);
+    } catch (err) {
+      setError(err.message);
+      handleLoad('signin', false);
+      handle_alert('ERROR', err.message);
+    }
+  };
   const backAction = () => {
     Alert.alert('Hold on!', 'Are you sure you want to go back?', [
       {
@@ -95,12 +228,21 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
     return true;
   };
   const [netFail, setNetFail] = useState(false);
+
+  const configureGoogleSign = () => {
+    GoogleSignin.configure({
+      webClientId: WEB_CLIENT_ID,
+      offlineAccess: false,
+    });
+  };
+  //* NET FAIL
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetFail(!state.isConnected);
     });
     return unsubscribe;
   }, []);
+  //* BACK HANDLER
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -108,6 +250,7 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
     );
     return () => backHandler.remove();
   }, []);
+  //* DYNAMIC LINKS
   useEffect(() => {
     const unsubscribe = dynamicLinks().onLink((link) => {
       if (link) {
@@ -137,17 +280,41 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
       });
     return () => unsubscribe();
   }, []);
+
+  //*google signin
+  useEffect(() => {
+    configureGoogleSign();
+  }, []);
+
+  const google_signin = async () => {
+    try {
+      handleLoad('google', true);
+      await dispatch(signInGoogle(navigation));
+      handleLoad('google', false);
+    } catch (err) {
+      handleLoad('google', false);
+      handle_alert('ERROR', err.message);
+    }
+  };
+  const facebook_signin = async () => {
+    try {
+      handleLoad('facebook', true);
+      await dispatch(loginWithFacebook(navigation));
+      handleLoad('facebook', false);
+    } catch (err) {
+      handleLoad('facebook', false);
+      handle_alert('ERROR', err.message);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.parent}>
+    <SafeAreaView
+      style={[styles.parent, {backgroundColor: theme.COLORS.WHITE}]}>
       <ImageBackground
         source={require('../Assets/images/bg.png')}
-        style={{
-          flex: 1,
-          paddingBottom: theme.SIZES.normal,
-        }}
+        style={styles.parent}
         resizeMode="cover"
         imageStyle={{opacity: 0.05}}>
-        <LogoModal show={logoModal} />
         <ErrorScreen show={netFail} navigation={navigation} scene={scene} />
         <View style={styles.parent}>
           <StatusBar
@@ -155,28 +322,21 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
             barStyle={'dark-content'}
           />
           <AuthHeader pageTitle={'Sign In'} back={false} />
-
           <KeyboardAvoidingView
+            style={{height: Height * 0.55}}
             enabled={true}
             behavior={Platform.OS === 'ios' ? 'position' : 'position'}
-            style={{flex: 1}}
-            contentContainerStyle={
-              {
-                // backgroundColor: theme.COLORS.DEFAULT,
-              }
-            }
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 19}>
-            <Slider list={Slider_content} />
             <View style={styles.groupView}>
               <TextField
                 inputProps={{
-                  placeholder: 'Email / Contact / User Name',
+                  placeholder: 'Email / Contact',
                   value: login.id.text,
                   onChangeText: (text) => {
-                    handleLogin('id', 'text', text);
+                    handleInput('id', 'text', text);
                   },
-                  onBlur: () => handleLogin('id', 'active', false),
-                  onFocus: () => handleLogin('id', 'active', true),
+                  onBlur: () => handleInput('id', 'active', false),
+                  onFocus: () => handleInput('id', 'active', true),
                 }}
                 error={login.id.error_message}
               />
@@ -185,90 +345,95 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
                   placeholder: 'Password',
                   value: login.password.text,
                   onChangeText: (text) => {
-                    handleLogin('password', 'text', text);
+                    handleInput('password', 'text', text);
                   },
-                  onBlur: () => handleLogin('password', 'active', false),
-                  onFocus: () => handleLogin('password', 'active', true),
+                  onBlur: () => handleInput('password', 'active', false),
+                  onFocus: () => handleInput('password', 'active', true),
                 }}
                 secureText={{
                   onToggle: () =>
-                    handleLogin('password', 'show', !login.password.show),
+                    handleInput('password', 'show', !login.password.show),
                   hidden: login.password.show,
                 }}
                 error={login.password.error_message}
               />
             </View>
             <TouchableOpacity
-              disabled={load}
+              disabled={load.signin}
               style={styles.forgotContainer}
               onPress={() => {
-                handleControls('FVU', 'EMAIL');
+                control('FVU', 'EMAIL');
               }}>
               <Text style={[styles.link, styles.text]}>Forgot password ?</Text>
             </TouchableOpacity>
             <View style={[styles.groupView, {alignItems: 'center'}]}>
-              <Touchable
-                loading={load}
-                size={'LARGE'}
-                filled={true}
-                title={'Sign in'}
+              <GradientButton
+                loading={load.signin}
+                loadingText={'...'}
                 touchableProps={{
-                  onPress: () => SignIn(navigation),
-                  disabled: load,
+                  onPress: signin,
+                  disabled: load.disable,
                 }}
+                title={'Sign In'}
+                size={1.7}
               />
             </View>
-            <View
-              style={[
-                styles.rowContainer,
-                styles.groupView,
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginRight: 5,
-                  justifyContent: 'center',
-                },
-              ]}>
-              <Text style={styles.text}>Don't have an account ? </Text>
-              <TouchableOpacity
-                disabled={load}
-                onPress={() => navigation.navigate('Signup')}>
-                <Text
-                  style={[
-                    styles.link,
-                    {
-                      fontSize: theme.SIZES.normal + 5,
-                      marginLeft: theme.SIZES.small / 2,
-                    },
-                  ]}>
-                  Sign Up
-                </Text>
-              </TouchableOpacity>
-            </View>
           </KeyboardAvoidingView>
-          <FVUModal
+          <OrSection title={'Sign In'} />
+          <SocialAuth
+            onFacebook={() => {
+              // setSocial('FACEBOOK');
+              facebook_signin();
+            }}
+            onGoogle={() => {
+              google_signin();
+            }}
             load={load}
-            show={controls.FVU == 'NONE' ? false : true}
-            onRequest={() => resetModal()}
+            type={'SIGNIN'}
+          />
+          <View
+            style={[
+              styles.rowContainer,
+              styles.groupView,
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginRight: 5,
+                justifyContent: 'center',
+              },
+            ]}>
+            <Text style={styles.text}>Don't have an account ? </Text>
+            <TouchableOpacity
+              disabled={load.disable}
+              onPress={() => navigation.navigate('Signup')}>
+              <Text
+                style={[
+                  styles.link,
+                  {
+                    fontSize: theme.SIZES.normal + 5,
+                    marginLeft: theme.SIZES.small / 2,
+                  },
+                ]}>
+                Sign Up
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <FVUModal
+            reset={reset_modal}
+            load={load}
+            onRequest={() => handle_controls('FVU', 'NONE')}
             type={controls.FVU}
             otp={{
-              type: FVU.code.type,
-              text: FVU.code.text,
-              onChangeText: (otp) => handleFVU('code', 'text', otp),
-              verifyOTP: () => VerifyCode(),
-              onBlur: () => handleFVU('code', 'active', false),
-              onFocus: () => handleFVU('code', 'active', true),
-              resendOTP: () => {},
-              error: FVU.code.error_message,
-            }}
-            email={{
-              text: FVU.email.text,
-              onChangeText: (email) => handleFVU('email', 'text', email),
-              onBlur: () => handleFVU('email', 'active', false),
-              sendOTP: (type) => {
-                if (type === 'EMAIL') {
+              type: FVU.input_otp.type,
+              text: FVU.input_otp.text,
+              onChangeText: (otp) => handle_fvu('input_otp', 'text', otp),
+              verifyOTP: () => verify_code(),
+              onBlur: () => handle_fvu('input_otp', 'active', false),
+              onFocus: () => handle_fvu('input_otp', 'active', true),
+              resendOTP: () => {
+                if (FVU.input_otp.type === 'EMAIL-RESET') {
                   if (FVU.email.text.length === 0) {
-                    return handleFVU(
+                    return handleInput(
                       'email',
                       'error_message',
                       'email is required',
@@ -277,11 +442,44 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
                   if (FVU.email.error_message.length !== 0) {
                     return;
                   }
-                  handleFVU('code', 'type', 'EMAIL-RESET');
-                  sendCodeMail(FVU.email.text);
+                  send_code_mail(FVU.email.text);
+                } else if (FVU.input_otp.type === 'CONTACT-RESET') {
+                  if (FVU.contact.text.length === 0) {
+                    return handleInput(
+                      'contact',
+                      'error_message',
+                      'mobile number is required to send PIN',
+                    );
+                  }
+                  if (FVU.contact.error_message.length !== 0) {
+                    return;
+                  }
+                  send_code_phone(FVU.contact.text);
+                }
+              },
+              error: FVU.input_otp.error_message,
+            }}
+            email={{
+              text: FVU.email.text,
+              onChangeText: (email) => handle_fvu('email', 'text', email),
+              onBlur: () => handle_fvu('email', 'active', false),
+              sendOTP: (type) => {
+                if (type === 'EMAIL') {
+                  if (FVU.email.text.length === 0) {
+                    return handle_fvu(
+                      'email',
+                      'error_message',
+                      'email is required',
+                    );
+                  }
+                  if (FVU.email.error_message.length !== 0) {
+                    return;
+                  }
+                  handle_fvu('input_otp', 'type', 'EMAIL-RESET');
+                  send_code_mail(FVU.email.text);
                 } else if (type === 'PHONE') {
                   if (FVU.contact.text.length === 0) {
-                    return handleFVU(
+                    return handle_fvu(
                       'contact',
                       'error_message',
                       'mobile number is required to send otp',
@@ -290,38 +488,41 @@ const SignIn: FunctionComponent<props> = ({navigation, scene, page}) => {
                   if (FVU.contact.error_message.length !== 0) {
                     return;
                   }
-                  handleFVU('code', 'type', 'CONTACT-RESET');
-                  sendCodePhone(FVU.contact.text);
+                  handle_fvu('code', 'type', 'CONTACT-RESET');
+                  send_code_phone(FVU.contact.text);
                 }
               },
-              onFocus: () => handleFVU('email', 'active', true),
+              onFocus: () => handle_fvu('email', 'active', true),
               error: FVU.email.error_message,
             }}
             contact={{
               text: FVU.contact.text,
-              onChangeText: (email) => handleFVU('contact', 'text', email),
-              onBlur: () => handleFVU('contact', 'active', false),
-              onFocus: () => handleFVU('contact', 'active', true),
+              onChangeText: (email) => handle_fvu('contact', 'text', email),
+              onBlur: () => handle_fvu('contact', 'active', false),
+              onFocus: () => handle_fvu('contact', 'active', true),
               error: FVU.contact.error_message,
             }}
             passwords={{
+              handleFvu: handle_fvu,
               password: {
-                text: FVU.newPassword.text,
+                text: FVU.password.text,
                 onChangeText: (password) =>
-                  handleFVU('newPassword', 'text', password),
-                onBlur: () => handleFVU('newPassword', 'active', false),
-                onFocus: () => handleFVU('newPassword', 'active', true),
-                error: FVU.newPassword.error_message,
+                  handle_fvu('password', 'text', password),
+                onBlur: () => handle_fvu('password', 'active', false),
+                onFocus: () => handle_fvu('password', 'active', true),
+                error: FVU.password.error_message,
+                show: FVU.password.show,
               },
               passwordAgain: {
-                text: FVU.rePassword.text,
+                text: FVU.password_again.text,
                 onChangeText: (password) =>
-                  handleFVU('rePassword', 'text', password),
-                onBlur: () => handleFVU('rePassword', 'active', false),
-                onFocus: () => handleFVU('rePassword', 'active', true),
-                error: FVU.rePassword.error_message,
+                  handle_fvu('password_again', 'text', password),
+                onBlur: () => handle_fvu('password_again', 'active', false),
+                onFocus: () => handle_fvu('password_again', 'active', true),
+                error: FVU.password_again.error_message,
+                show: FVU.password_again.show,
               },
-              updatePassword: () => UdpatePassword(FVU.newPassword.text),
+              updatePassword: () => update_password(FVU.password.text),
             }}
           />
         </View>
@@ -335,7 +536,6 @@ export default SignIn;
 const styles = StyleSheet.create({
   parent: {
     flex: 1,
-    backgroundColor: theme.COLORS.WHITE,
   },
   rowContainer: {
     width: '95%',
@@ -347,13 +547,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.SIZES.small,
   },
   groupView: {
-    paddingVertical: theme.SIZES.small,
+    paddingVertical: theme.SIZES.large * 2,
     paddingHorizontal: theme.SIZES.small,
   },
   link: {
     fontSize: theme.SIZES.normal - 2,
     fontFamily: 'Signika-Medium',
     color: theme.COLORS.Links,
+    textDecorationLine: 'underline',
+    textDecorationColor: theme.COLORS.Links,
   },
   text: {
     fontSize: theme.SIZES.normal + 2,
@@ -363,6 +565,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     width: '100%',
-    // height: Height / 2.4,
   },
 });

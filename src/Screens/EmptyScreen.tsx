@@ -10,7 +10,7 @@ import {
 import React, {FunctionComponent, useState} from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import TopNavbar from '../Components/common/TopNavbar';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import theme from '../Constants/theme';
 
 type props = {
@@ -27,7 +27,7 @@ const EmptyScreen: FunctionComponent<props> = ({
   style,
 }) => {
   return (
-    <View
+    <SafeAreaView
       style={{
         alignItems: 'center',
         justifyContent: 'center',
@@ -35,7 +35,7 @@ const EmptyScreen: FunctionComponent<props> = ({
       }}>
       {icon && <Icon name={icon} size={50} color={theme.COLORS.PRIMARY} />}
       <Text style={styles.messageStyle}>{message}</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

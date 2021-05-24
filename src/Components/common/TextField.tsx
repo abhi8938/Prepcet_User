@@ -9,7 +9,9 @@ import {Height, width} from '../../Constants/size';
 import React, {FunctionComponent, useRef, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 
-import Icon_vec from 'react-native-vector-icons/Octicons';
+import GradientButton from '../GradientButton';
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import Icon_vec from 'react-native-vector-icons/Ionicons';
 import baseStyles from './styles';
 import theme from '../../Constants/theme';
 
@@ -32,6 +34,11 @@ type props = {
   icon?: {icon: string; onPress?: () => void};
   label?: string;
   style?: any;
+  verify?: {
+    onPress: () => void;
+    verified: boolean;
+    load: boolean;
+  };
 };
 
 const TextField: FunctionComponent<props> = ({
@@ -41,6 +48,7 @@ const TextField: FunctionComponent<props> = ({
   icon,
   label,
   style,
+  verify,
 }) => {
   const Bcolo = useSharedValue(0);
   const animationBColor = useDerivedValue(() => {
@@ -61,7 +69,12 @@ const TextField: FunctionComponent<props> = ({
     Bcolo.value = withTiming(1, {duration: 300});
   };
   return (
-    <>
+    <View
+      style={{
+        maxWidth: 700,
+        alignSelf: 'center',
+        marginBottom: 5,
+      }}>
       <Animated.View style={[styles.parent, style, BStyle]}>
         {/* {icon && <Icon type={icon.icon} onPress={icon.onPress} size={2} />} */}
         <TextInput
@@ -90,7 +103,7 @@ const TextField: FunctionComponent<props> = ({
         {secureText && (
           <Icon_vec
             style={styles.eye}
-            name={secureText.hidden === false ? 'eye' : 'eye-closed'}
+            name={secureText.hidden === false ? 'eye' : 'eye-off'}
             size={theme.SIZES.large + 1}
             color={
               secureText.hidden
@@ -104,23 +117,57 @@ const TextField: FunctionComponent<props> = ({
       <View style={styles.errorContainer}>
         {error.length !== 0 && <Text style={styles.error}>{error}</Text>}
       </View>
-    </>
+      {verify && (
+        <View style={styles.verifyButton}>
+          {verify.verified === false ? (
+            inputProps.value.length !== 0 && (
+              <GradientButton
+                loading={verify.load}
+                loadingText={'...'}
+                touchableProps={{
+                  onPress: verify.onPress,
+                  disabled: verify.load,
+                }}
+                title={'verify'}
+                size={1.1}
+              />
+            )
+          ) : (
+            <IconAnt
+              style={styles.check}
+              name={'checkcircle'}
+              size={theme.SIZES.large + 1}
+              color={theme.COLORS.SECONDARY}
+            />
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 
 export default TextField;
 
 const styles = StyleSheet.create({
+  verifyButton: {
+    position: 'absolute',
+    zIndex: 1,
+    elevation: 2,
+    right: -2,
+    top: 14,
+  },
   parent: {
     flexDirection: 'row',
-    borderBottomWidth: theme.SIZES.small * 0.15,
+    borderWidth: 1,
+    borderColor: `${theme.COLORS.BORDER_TEXT}50`,
     marginVertical: theme.SIZES.small * 0.5,
-    paddingTop: theme.SIZES.small * 0.5,
-    paddingBottom: theme.SIZES.small * 0.2,
-    paddingHorizontal: theme.SIZES.small * 0.3,
+    paddingTop: theme.SIZES.small * 0.7,
+    paddingBottom: theme.SIZES.small * 0.5,
+    borderRadius: 8,
+    paddingHorizontal: theme.SIZES.small * 0.8,
   },
   textField: {
-    width: '90%',
+    width: '100%',
     minHeight: theme.SIZES.large,
     paddingVertical: theme.SIZES.small / 5,
     fontFamily: 'Signika-Regular',
@@ -143,5 +190,11 @@ const styles = StyleSheet.create({
     fontSize: theme.SIZES.normal / 1.4,
     color: theme.COLORS.ERROR,
     fontFamily: 'Signika-Regular',
+  },
+  check: {
+    zIndex: 1,
+    elevation: 2,
+    marginHorizontal: theme.SIZES.small,
+    marginTop: theme.SIZES.small / 3.5,
   },
 });

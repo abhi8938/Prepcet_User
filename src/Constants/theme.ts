@@ -66,6 +66,9 @@ export default {
     ORANGE: '#F3983E',
     GREEN: '#138808',
     LIGHT_GREY: '#EFECEC',
+    BORDER_TEXT: '#463F3A',
+    FACEBOOK: '#3B5998',
+    GOOGLE: '#F14336',
   },
   SIZES: generateSizes(),
   ITEM_NAMES: {
