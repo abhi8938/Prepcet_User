@@ -4,20 +4,20 @@ import {
   GraphRequestManager,
   LoginManager,
 } from 'react-native-fbsdk-next';
+import {Alert, Keyboard} from 'react-native';
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import {getCategories, set_categories, set_user_recents} from './main';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GraphRequestConfig} from 'react-native-fbsdk-next/types/FBGraphRequest';
-import {Keyboard} from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import User from '../models/user';
 import {firebase} from '@react-native-firebase/messaging';
 import services from '../../Services/services';
-import {set_user_recents} from './main';
 import {useSelector} from 'react-redux';
 
 export const HANDLE_REGISTER = 'HANDLE_USER';
@@ -99,7 +99,7 @@ export const getUser = () => {
       const response = await service.get_user();
       if (response.status !== 200) {
         throw new Error(
-          `ERROR - ${response.data === undefined ? response : response.data}`,
+          `${response.data === undefined ? response : response.data}`,
         );
       }
       dispatch(set_user_recents(response.data.recents));
@@ -125,9 +125,13 @@ export const Login = (navigation: any, loginData: any) => {
       dispatch({
         type: SIGN_IN,
       });
-      return navigation.replace('Main');
+      const category = await AsyncStorage.getItem('CATEGORY');
+      if (category) {
+        return navigation.replace('Main');
+      } else {
+        return navigation.replace('Category');
+      }
     } catch (err) {
-      dispatch(handleAlert('ERROR', err.message));
       throw err;
     }
   };
@@ -158,7 +162,6 @@ export const sendCodeMail = (email: string, type: string) => {
         current_code: `${current_code}`,
       });
     } catch (error) {
-      dispatch(handleAlert('ERROR', error.message));
       throw error;
     }
   };
@@ -188,7 +191,6 @@ export const sendCodePhone = (contact: string, type: string) => {
         current_code: `${current_code}`,
       });
     } catch (error) {
-      dispatch(handleAlert('ERROR', error.message));
       throw error;
     }
   };
@@ -213,7 +215,6 @@ export const UpdatePassword = (password: string, id: string) => {
       });
       dispatch({type: UPDATE_PASSWORD});
     } catch (error) {
-      dispatch(handleAlert('ERROR', error.message));
       throw error;
     }
   };
@@ -234,7 +235,12 @@ export const Register = (navigation: any, userData: any) => {
       dispatch({
         type: SIGN_UP,
       });
-      return navigation.replace('Main');
+      const category = await AsyncStorage.getItem('CATEGORY');
+      if (category) {
+        return navigation.replace('Main');
+      } else {
+        return navigation.replace('Category');
+      }
     } catch (err) {
       throw err;
     }
@@ -374,6 +380,10 @@ export const loginWithFacebook = (navigation: any) => {
       throw err;
     }
   };
+};
+
+export const facebook_logout = async () => {
+  await LoginManager.logOut();
 };
 
 // .then(

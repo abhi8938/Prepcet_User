@@ -17,9 +17,9 @@ const AlertModal: FunctionComponent = () => {
     dispatch(handleAlert('NONE', ''));
   };
 
-  // useEffect(() => {
-  //   console.log('alert', alert);
-  // }, [alert]);
+  useEffect(() => {
+    console.log('alert', alert);
+  }, [alert]);
 
   const controls = {show: alert.typeOf === 'ERROR', toggle};
   return (

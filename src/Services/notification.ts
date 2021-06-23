@@ -4,23 +4,49 @@ import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
+import services from './services';
+import {set_notifications} from '../Store/actions/main';
 
+const service = new services();
 export default class notification {
   async checkHasPermission() {
     const enabled = await messaging().hasPermission();
-    if (enabled) {
+
+    if (
+      enabled === messaging.AuthorizationStatus.AUTHORIZED ||
+      enabled === messaging.AuthorizationStatus.PROVISIONAL
+    ) {
       // user has permissions
       return;
-    } else {
-      console.log('NOT ENABLED notification Permission');
+    } else if (enabled === messaging.AuthorizationStatus.NOT_DETERMINED) {
       // user doesn't have permission
-      try {
-        await messaging().requestPermission();
-        Alert.alert('permission granted');
-        // User has authorised
-      } catch (error) {
-        Alert.alert('not granted');
-        // User has rejected permissions
+      const permissionGranted = await messaging().requestPermission({
+        sound: true,
+        alert: true,
+        badge: true,
+        provisional: true,
+      });
+      if (
+        permissionGranted === messaging.AuthorizationStatus.AUTHORIZED ||
+        permissionGranted === messaging.AuthorizationStatus.PROVISIONAL
+      ) {
+        Alert.alert('Permission Granted');
+        return;
+      } else if (permissionGranted === messaging.AuthorizationStatus.DENIED) {
+        Alert.alert(
+          'Permission Denied',
+          'Please allow prepCET to recieve notifications',
+          [
+            {
+              text: 'Okay',
+              onPress: () => this.checkHasPermission(),
+            },
+            {
+              text: 'cancel',
+              onPress: () => console.log('permission denied'),
+            },
+          ],
+        );
       }
     }
   }
@@ -47,10 +73,10 @@ export default class notification {
     }
     console.log('notifications', New);
     await AsyncStorage.setItem('Notifications', JSON.stringify(New));
-    return null;
+    return New;
   };
 
-  messageListener() {
+  messageListener(dispatch: any) {
     return messaging().onMessage(async (message: any) => {
       const channelId = await notifee.createChannel({
         id: 'default',
@@ -62,8 +88,10 @@ export default class notification {
       // Show Notification
 
       await notifee.displayNotification({
-        title: message.data.title ? message.data.title : 'Test',
-        body: message.data.body ? message.data.body : 'body',
+        title: message.data.title
+          ? message.data.title
+          : message.notification.title,
+        body: message.data.body ? message.data.body : message.notification.body,
         android: {
           channelId, // optional, defaults to 'ic_launcher'.
           pressAction: {
@@ -72,7 +100,14 @@ export default class notification {
         },
       });
       //TODO:  - save in asyncstorage
-      this.updateNotifications(message, true);
+      const notifications = await this.updateNotifications(message, true);
+      dispatch(set_notifications(notifications));
+    });
+  }
+
+  onTokenRefresh() {
+    return messaging().onTokenRefresh(async (token) => {
+      await service.update_student({device_token: token});
     });
   }
 
@@ -90,7 +125,6 @@ export default class notification {
   };
   getToken = async () => {
     const token = await messaging().getToken();
-    console.log('token', token);
     return token;
   };
 }

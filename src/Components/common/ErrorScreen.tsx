@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Image,
   Modal,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,14 +19,12 @@ import theme from '../../Constants/theme';
 
 type props = {
   show: boolean;
-  navigation: any;
-  scene: any;
 };
 
-const ErrorScreen: FunctionComponent<props> = ({show, navigation, scene}) => {
+const ErrorScreen: FunctionComponent<props> = ({show}) => {
   return (
     <Modal animationType="none" transparent={false} visible={show}>
-      <View>
+      <SafeAreaView>
         <View
           style={{
             alignItems: 'center',
@@ -39,7 +38,7 @@ const ErrorScreen: FunctionComponent<props> = ({show, navigation, scene}) => {
               marginTop: theme.SIZES.large * 1.5,
               color: theme.COLORS.GREEN,
             }}>
-            Whopps!{' '}
+            Whoops!{' '}
           </Text>
           <Text
             style={{
@@ -62,7 +61,7 @@ const ErrorScreen: FunctionComponent<props> = ({show, navigation, scene}) => {
           source={require('../../Assets/images/prepuni_logo.jpg')}
           resizeMode={'contain'}
         />
-      </View>
+      </SafeAreaView>
       <View style={{marginTop: 'auto', marginBottom: 'auto'}}>
         <ActivityIndicator size="large" color={theme.COLORS.PRIMARY} />
       </View>

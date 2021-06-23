@@ -273,3 +273,543 @@ export const IOSSizes = [
     tab: true,
   },
 ];
+
+export let SECTIONED_DATA = [
+  {
+    heading: 'Today',
+    data: [
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 1',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+    ],
+  },
+  {
+    heading: 'Yesterday',
+    data: [
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 1',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+      {
+        cover:
+          'https://cdn.eduncle.com/webfiles/1/promo/promo_images/540x304/_IH3od(CUL.jpg',
+        body:
+          'Function to execute on press. If not set, will cause the touchable to be disabled.',
+        title: 'Content of the TouchableRipple - 2',
+      },
+    ],
+  },
+];
+
+export const QUESTION_DATA = [
+  {
+    note: 'Very Important question occured 5 times in 4 exams',
+    solution: 'this is the correct solution',
+    question: 'Choose correct answer from the following options : ',
+    options: [
+      {
+        option: 'wrong option 1',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'wrong option 2',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'wrong option 3',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'correct option',
+        correct: true,
+        type: 'TEXT',
+      },
+    ],
+  },
+  {
+    solution: 'this is the correct solution',
+    bookmark: true,
+    question: 'Choose correct answer from the following options : ',
+    options: [
+      {
+        option: 'wrong option 1',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'wrong option 2',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'wrong option 3',
+        correct: false,
+        type: 'TEXT',
+      },
+      {
+        option: 'correct option',
+        correct: true,
+        type: 'TEXT',
+      },
+    ],
+  },
+];
+
+export const TEST_DATA = [
+  {
+    id: 1,
+    name: 'Bihar State Cooperative Bank Mini Mock',
+    created_at: Date.now(),
+    questions: [
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+    ],
+    expiration: Date.now(),
+    duration: 120, //in minutes
+    total_marks: 75,
+    attempts: 3213,
+    type: 'QUIZ', // MOCK | PRACTICE | QUIZ
+  },
+  {
+    id: 2,
+    name: 'Bihar State Cooperative Bank Mini Mock',
+    created_at: Date.now(),
+    questions: [
+      {
+        id: 1,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 2,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 3,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 4,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 5,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 6,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+      {
+        id: 7,
+        question: 'question',
+        options: [
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: false},
+          {option: 'option', type: 'TEXT', correct: true},
+        ],
+      },
+    ],
+    expiration: Date.now(),
+    duration: 120, //in minutes
+    total_marks: 75,
+    attempts: 3213,
+    type: 'QUIZ', // MOCK | PRACTICE | QUIZ
+  },
+];
+let resouces_data = [
+  {
+    id: 1,
+    title: 'Daily Quizzes',
+    route: 'DailyQuiz',
+  },
+  {
+    id: 2,
+    title: 'Daily Lectures',
+    route: 'DailyLecture',
+  },
+  {
+    id: 3,
+    title: 'Daily Words',
+    route: 'DailyVocab',
+  },
+  {
+    id: 4,
+    title: 'Previous Year Papers',
+    route: 'PreviousPapers',
+  },
+  {
+    id: 5,
+    title: 'Bookmarks',
+    route: 'Bookmarks',
+  },
+  {
+    id: 5,
+    title: 'Doubts',
+    route: 'Doubts',
+  },
+];
+
+export const CONTENT_LIST_DATA = [
+  {
+    id: 1,
+    title: 'English Noun',
+  },
+  {
+    id: 2,
+    title: 'English Noun',
+  },
+  {
+    id: 3,
+    title: 'English Noun',
+  },
+  {
+    id: 4,
+    title: 'English Noun',
+  },
+  {
+    id: 5,
+    title: 'English Noun',
+  },
+];
+
+export const GRADIENT_SET = [
+  {
+    id: 1,
+    first: '#fdc830',
+    second: '#f37335',
+    title: '2 Mock Tests @ Rs. 6 ',
+  },
+  {
+    id: 2,
+    first: '#fdc830',
+    second: '#f37335',
+    title: '3 Mock Tests @ Rs. 9 ',
+  },
+  {
+    id: 2,
+    first: '#fdc830',
+    second: '#f37335',
+    title: '5 Mock Tests @ Rs. 13 ',
+  },
+  {
+    id: 2,
+    first: '#fdc830',
+    second: '#f37335',
+    title: 'Unlimited Mock Tests @ Rs. 150 ',
+  },
+];
+
+export const TRANSACTION_SET = [
+  {
+    id: 1,
+    method: 'CREDIT',
+    amount: 50,
+    name: 'Wallet Recharge',
+    created_at: Date.now(),
+  },
+  {
+    id: 2,
+    method: 'DEBIT',
+    amount: 10,
+    name: 'Paid For English Video Lecture',
+    created_at: Date.now(),
+  },
+  {
+    id: 3,
+    method: 'CREDIT',
+    amount: 15,
+    name: 'Wallet Recharge',
+    created_at: Date.now(),
+  },
+  {
+    id: 4,
+    method: 'DEBIT',
+    amount: 20,
+    name: 'For Subject Wise Mock test',
+    created_at: Date.now(),
+  },
+  {
+    id: 5,
+    method: 'CREDIT',
+    amount: 50,
+    name: 'Wallet Recharge',
+    created_at: Date.now(),
+  },
+  {
+    id: 6,
+    method: 'DEBIT',
+    amount: 10,
+    name: 'Paid For English Video Lecture',
+    created_at: Date.now(),
+  },
+  {
+    id: 7,
+    method: 'CREDIT',
+    amount: 15,
+    name: 'Wallet Recharge',
+    created_at: Date.now(),
+  },
+  {
+    id: 8,
+    method: 'DEBIT',
+    amount: 20,
+    name: 'For Subject Wise Mock test',
+    created_at: Date.now(),
+  },
+];
+
+export const ACCOUNT_LIST = [
+  {
+    id: 1,
+    name: 'Your Profile',
+    route: 'Profile',
+    icon: 'md-star',
+    first: true,
+  },
+  {
+    id: 2,
+    name: 'Your Orders',
+    route: 'Orders',
+    icon: 'md-star',
+  },
+  {
+    id: 3,
+    name: 'PrepCoin',
+    route: 'Wallet',
+    icon: 'md-logo-bitcoin',
+  },
+  {
+    id: 4,
+    name: 'Your Reports',
+    route: 'MyResults',
+    icon: 'md-star',
+  },
+  {
+    id: 5,
+    name: 'Help & Support',
+    route: 'Support',
+    icon: 'md-star',
+  },
+  {
+    id: 6,
+    name: 'Refer & Earn',
+    route: 'Refer',
+    icon: 'md-star',
+  },
+  {
+    id: 7,
+    name: 'Rate Us',
+    icon: 'md-star',
+  },
+  {
+    id: 8,
+    name: 'Logout',
+    icon: 'md-star',
+    last: true,
+  },
+];
+
+export const ORDER_DATA = [
+  {
+    id: 1,
+    type: 'SINGLE',
+    ide: '3123bufrg387rg239eew',
+    productName: 'Mock Tests',
+    category: 'Banking',
+    quantity: 2,
+    expiration: Date.now(),
+    final_amount: 30,
+    discount: 0,
+    transactionId: 'dsaf98fh304fnodfn32',
+    created_at: Date.now(),
+  },
+  {
+    id: 2,
+    type: 'COMBO',
+    ide: '3123bufrg387rg239eew',
+    productName: 'Video Lecture Combo',
+    category: 'Banking',
+    subject: 'English',
+    quantity: 2,
+    expiration: Date.now(),
+    final_amount: 55,
+    discount: 0,
+    transactionId: 'dsaf98fh304fnodfn32',
+    created_at: Date.now(),
+  },
+  {
+    id: 3,
+    type: 'SINGLE',
+    ide: '3123bufrg387rg239eew',
+    productName: 'Mock Tests',
+    category: 'IELTS',
+    quantity: 5,
+    expiration: Date.now(),
+    final_amount: 20,
+    discount: 0,
+    transactionId: 'dsaf98fh304fnodfn32',
+    created_at: Date.now(),
+  },
+];
+
+export const RESULT_DATA = [{
+  id:1,
+  
+}]

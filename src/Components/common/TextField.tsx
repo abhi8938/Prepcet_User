@@ -1,10 +1,10 @@
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+// import Animated, {
+//   interpolateColor,
+//   useAnimatedStyle,
+//   useDerivedValue,
+//   useSharedValue,
+//   withTiming,
+// } from 'react-native-reanimated';
 import {Height, width} from '../../Constants/size';
 import React, {FunctionComponent, useRef, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
@@ -50,24 +50,24 @@ const TextField: FunctionComponent<props> = ({
   style,
   verify,
 }) => {
-  const Bcolo = useSharedValue(0);
-  const animationBColor = useDerivedValue(() => {
-    return interpolateColor(
-      Bcolo.value,
-      [0, 1],
-      [theme.COLORS.PRICE_COLOR, theme.COLORS.PRIMARY],
-    );
-  });
+  // const Bcolo = useSharedValue(0);
+  // const animationBColor = useDerivedValue(() => {
+  //   return interpolateColor(
+  //     Bcolo.value,
+  //     [0, 1],
+  //     [theme.COLORS.PRICE_COLOR, theme.COLORS.PRIMARY],
+  //   );
+  // });
 
-  //@ts-ignore
-  const BStyle = useAnimatedStyle(() => {
-    return {borderBottomColor: animationBColor.value};
-  });
-  //@ts-ignore
+  // //@ts-ignore
+  // const BStyle = useAnimatedStyle(() => {
+  //   return {borderBottomColor: animationBColor.value};
+  // });
+  // //@ts-ignore
 
-  const startAnimation = () => {
-    Bcolo.value = withTiming(1, {duration: 300});
-  };
+  // const startAnimation = () => {
+  //   Bcolo.value = withTiming(1, {duration: 300});
+  // };
   return (
     <View
       style={{
@@ -75,45 +75,45 @@ const TextField: FunctionComponent<props> = ({
         alignSelf: 'center',
         marginBottom: 5,
       }}>
-      <Animated.View style={[styles.parent, style, BStyle]}>
-        {/* {icon && <Icon type={icon.icon} onPress={icon.onPress} size={2} />} */}
+      {/* <Animated.View style={[styles.parent, style, BStyle]}> */}
+      {/* {icon && <Icon type={icon.icon} onPress={icon.onPress} size={2} />} */}
+      <View style={[styles.parent, style]}>
         <TextInput
           placeholderTextColor={theme.COLORS.PLACEHOLDER}
           style={[
             styles.textField,
             {
-              color:
-                Bcolo.value === 0 ? theme.COLORS.BLACK : theme.COLORS.PRIMARY,
+              color: theme.COLORS.PRIMARY,
+              // Bcolo.value === 0 ? theme.COLORS.BLACK : theme.COLORS.PRIMARY,
             },
             inputProps.style,
           ]}
           {...inputProps}
           onFocus={(e) => {
-            startAnimation();
+            // startAnimation();
             inputProps.onFocus(e);
           }}
           onBlur={(e) => {
-            Bcolo.value = withTiming(0, {duration: 200});
+            // Bcolo.value = withTiming(0, {duration: 200});
             inputProps.onBlur(e);
           }}
           secureTextEntry={
             secureText && secureText.hidden === false ? true : false
           }
         />
-        {secureText && (
-          <Icon_vec
-            style={styles.eye}
-            name={secureText.hidden === false ? 'eye' : 'eye-off'}
-            size={theme.SIZES.large + 1}
-            color={
-              secureText.hidden
-                ? theme.COLORS.BORDER_COLOR
-                : theme.COLORS.HEADER
-            }
-            onPress={() => secureText.onToggle && secureText.onToggle()}
-          />
-        )}
-      </Animated.View>
+      </View>
+      {secureText && (
+        <Icon_vec
+          style={styles.eye}
+          name={secureText.hidden === false ? 'eye' : 'eye-off'}
+          size={theme.SIZES.large + 1}
+          color={
+            secureText.hidden ? theme.COLORS.BORDER_COLOR : theme.COLORS.HEADER
+          }
+          onPress={() => secureText.onToggle && secureText.onToggle()}
+        />
+      )}
+      {/* </Animated.View> */}
       <View style={styles.errorContainer}>
         {error.length !== 0 && <Text style={styles.error}>{error}</Text>}
       </View>

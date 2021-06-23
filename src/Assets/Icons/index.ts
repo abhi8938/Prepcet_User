@@ -51,6 +51,8 @@ import TArrow from './arrow_top.svg';
 //@ts-ignore
 import Tick_green from './tick_green.svg';
 //@ts-ignore
+import Timer from './timer.svg';
+//@ts-ignore
 import Trash from './trash.svg';
 //@ts-ignore
 import University from './university.svg';
@@ -194,5 +196,10 @@ export default [
     id: 27,
     label: 'OFFER',
     Icon: Offer,
+  },
+  {
+    id: 28,
+    label: 'TIMER',
+    Icon: Timer,
   },
 ];

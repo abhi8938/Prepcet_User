@@ -37,8 +37,8 @@
 		94F891FD593B43569E1C0863 /* Signika-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28C981F0F5424FBE991A3F75 /* Signika-Bold.ttf */; };
 		C97779E6516B45EB973CBD60 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C493AFDA1724488B5D681A8 /* Comfortaa-Bold.ttf */; };
 		E29BA5B914574FEBA1265989 /* Signika-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34F69F90BC0D42B6BDE82776 /* Signika-Medium.ttf */; };
+		E5301BAE26662FB300A7B41A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5301BAD26662FB300A7B41A /* GoogleService-Info.plist */; };
 		E589C2602656891000A1E159 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E589C25F2656891000A1E159 /* File.swift */; };
-		E5C9DC592656682E003EDB74 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */; };
 		E751353912BB41CE9F3376C3 /* ComicNeue-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A40C78F692D49A7912220C7 /* ComicNeue-Regular.ttf */; };
 		E76B4041CA75415A9DBF8296 /* Comfortaa-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F5B2E1A0A0FE45CA9FCF326C /* Comfortaa-Medium.ttf */; };
 		F8B22D96C36D849DBCA2BABE /* libPods-user-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D829674BDFA6A82B5CB7D54 /* libPods-user-tvOSTests.a */; };
@@ -123,9 +123,9 @@
 		DA01D3B53D4342CBB7DD2432 /* Signika-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Signika-Regular.ttf"; path = "../assets/fonts/Signika-Regular.ttf"; sourceTree = "<group>"; };
 		DF04EA6D50984EBA92E2C496 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		E13E56856F00486A8A1F9B38 /* Signika-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Signika-Light.ttf"; path = "../assets/fonts/Signika-Light.ttf"; sourceTree = "<group>"; };
+		E5301BAD26662FB300A7B41A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E589C25E2656891000A1E159 /* user-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "user-Bridging-Header.h"; sourceTree = "<group>"; };
 		E589C25F2656891000A1E159 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
-		E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E5F68A75260C90110069AB66 /* user.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = user.entitlements; path = user/user.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -288,7 +288,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				E5C9DC582656682E003EDB74 /* GoogleService-Info.plist */,
+				E5301BAD26662FB300A7B41A /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* user */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* userTests */,
@@ -460,7 +460,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5C9DC592656682E003EDB74 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				C97779E6516B45EB973CBD60 /* Comfortaa-Bold.ttf in Resources */,
@@ -480,6 +479,7 @@
 				758473ABB13F45F89A5EA19C /* Signika-SemiBold.ttf in Resources */,
 				6B4AAF01D5214770BBE8046E /* TheStudentsTeacher-Regular.ttf in Resources */,
 				0A27A09E2C824F5496BFC6C6 /* ComicNeue-Bold.ttf in Resources */,
+				E5301BAE26662FB300A7B41A /* GoogleService-Info.plist in Resources */,
 				E751353912BB41CE9F3376C3 /* ComicNeue-Regular.ttf in Resources */,
 				15C36753B8284C6ABC64A6C3 /* ComicNeueAngular-Bold.ttf in Resources */,
 				2416DD7823264064B44D4D9D /* ComicNeueAngular-Regular.ttf in Resources */,

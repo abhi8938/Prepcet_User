@@ -6,14 +6,13 @@ import baseStyles from './styles';
 import theme from '../../Constants/theme';
 
 type props = {
-  imageProps: {source: any; style: any};
-  style: any;
+  uri: any;
 };
 
-const Cover: FunctionComponent<props> = ({imageProps, style}) => {
+const Cover: FunctionComponent<props> = ({uri}) => {
   return (
-    <View style={[styles.parent, style]}>
-      <Image {...imageProps} style={[styles.image, imageProps.style]} />
+    <View style={[styles.parent]}>
+      <Image source={{uri: uri}} style={[styles.image]} />
     </View>
   );
 };
@@ -22,14 +21,14 @@ export default Cover;
 
 const styles = StyleSheet.create({
   parent: {
-    width: '30%',
-    maxHeight: Height * 0.17,
+    width: width * 0.99,
+    alignSelf: 'center',
+    backgroundColor: '#ccc',
   },
   image: {
-    height: '100%',
+    height: 'auto',
     width: '100%',
-    borderRadius: 9,
-    backgroundColor: '#ccc',
-    aspectRatio: 0.6,
+    borderRadius: 5,
+    aspectRatio: 1.8,
   },
 });

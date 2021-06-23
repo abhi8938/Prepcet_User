@@ -20,9 +20,9 @@ type props = {
 
 const MyResults: FunctionComponent<props> = ({navigation, scene}) => {
   return (
-    <SafeAreaView style={styles.parent}>
+    <View style={styles.parent}>
       <Text>MyResults</Text>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -130,7 +130,7 @@ const RenderOTP = ({load, otp}: any) => {
       <View style={styles.otpResendContainer}>
         <Text
           style={[
-            baseStyles.text.fontFamily,
+            {fontFamily: baseStyles.text.fontFamily},
             {color: theme.COLORS.BORDER_COLOR},
           ]}>
           Didn't Recieve Code?{' '}
@@ -144,7 +144,7 @@ const RenderOTP = ({load, otp}: any) => {
           }}>
           <Text
             style={[
-              baseStyles.text.fontFamily,
+              {fontFamily: baseStyles.text.fontFamily},
               {color: theme.COLORS.BORDER_COLOR},
             ]}>
             Resend Code in -{' '}

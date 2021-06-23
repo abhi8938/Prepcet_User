@@ -53,7 +53,7 @@ const HomeSearch: FunctionComponent<props> = ({navigation, route}) => {
   };
   const [searchResults, setSearchResults]: any = useState([]);
   return (
-    <SafeAreaView style={styles.parent}>
+    <View style={styles.parent}>
       <ImageBackground
         source={bg}
         style={[
@@ -66,18 +66,6 @@ const HomeSearch: FunctionComponent<props> = ({navigation, route}) => {
         resizeMode="cover"
         imageStyle={{opacity: 0.03}}>
         <View style={styles.searchBar}>
-          <Icon
-            size={0.8}
-            type={'ARROW_LEFT'}
-            style={{
-              marginRight: theme.SIZES.small / 2.5,
-              padding: theme.SIZES.small / 1.5,
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              backgroundColor: theme.COLORS.BORDER,
-            }}
-            onPress={() => navigation.goBack()}
-          />
           <TextInput
             placeholder={'Search'}
             onChangeText={(text) => {
@@ -102,7 +90,7 @@ const HomeSearch: FunctionComponent<props> = ({navigation, route}) => {
           )}
         />
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 

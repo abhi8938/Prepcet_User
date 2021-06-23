@@ -56,7 +56,7 @@ const baseStyles = StyleSheet.create({
   },
   shadow_minimal: {
     shadowColor: theme.COLORS.BORDER_TEXT,
-    elevation: 2,
+    elevation: 5,
     shadowOffset: {width: 2, height: 1},
     shadowRadius: 5,
     shadowOpacity: 0.3,

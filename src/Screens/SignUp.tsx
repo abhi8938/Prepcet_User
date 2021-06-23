@@ -201,7 +201,6 @@ const FirstPage = ({
         }}
         error={register.password_again.error_message}
       />
-      {/* <View style={styles.checkBoxes}> */}
       <View style={styles.NameContainer}>
         <CheckBox
           checkedColor={theme.COLORS.ACTIVE}

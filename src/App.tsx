@@ -1,12 +1,14 @@
 import 'react-native-gesture-handler';
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 
 import {Alert} from 'react-native';
 import AlertModal from './Components/modals/AlertModal';
 import AppScreens from './Navigation';
+import ErrorScreen from './Components/common/ErrorScreen';
 import {NavigationContainer} from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
 import {Provider} from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import mainReducer from './Store/reducers/main';
@@ -25,22 +27,26 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 const service = new notification();
 const App = ({}) => {
-  // const {alert, handleAlert} = useAuthState();
-  const check = async () => {
-    await service.checkHasPermission();
-  };
+  const [netFail, setFail] = useState(false);
+
+  //* NET FAIL
   useEffect(() => {
-    check();
-    const unsubscribe = service.messageListener();
-    const unsubscribe_notification = service.notificationEvent();
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      // console.log('state', state);
+      setFail(
+        state.isConnected === false && state.isInternetReachable === false
+          ? true
+          : false,
+      );
+    });
     return () => {
-      unsubscribe_notification;
       unsubscribe;
     };
   }, []);
 
   return (
     <Provider store={store}>
+      <ErrorScreen show={netFail} />
       <AlertModal />
       <AppScreens />
     </Provider>

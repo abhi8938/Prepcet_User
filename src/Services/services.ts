@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PackageScreen from '../Screens/PackageScreen';
 import {URL} from './../Constants/urls';
 import axios from 'axios';
 
@@ -122,7 +121,7 @@ export default class services {
       'x-auth-token': token,
     };
     return axios
-      .get(URL + '/subject/' + id, {headers})
+      .get(URL + '/subject?category_id=' + id, {headers})
       .then((response) => response)
       .catch((error) => error);
   };
@@ -170,7 +169,42 @@ export default class services {
       'x-auth-token': token,
     };
     return axios
-      .get(URL + '/tests/' + id, {headers})
+      .get(URL + '/testpaper?category_id=' + id, {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
+  get_subject_tests = async (id: string) => {
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+    };
+    return axios
+      .get(URL + '/testpaper?subject_id=' + id, {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
+  get_subject_quizzes = async (id: string) => {
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+      daily: true,
+    };
+    return axios
+      .get(URL + '/testpaper?subject_id=' + id, {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
+  get_category_quizzes = async (id: string) => {
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+      daily: true,
+    };
+    return axios
+      .get(URL + '/testpaper?category_id=' + id, {headers})
       .then((response) => response)
       .catch((error) => error);
   };
@@ -181,7 +215,7 @@ export default class services {
       'x-auth-token': token,
     };
     return axios
-      .get(URL + '/lectures/' + id, {headers})
+      .get(URL + '/lecture?category_id=' + id, {headers})
       .then((response) => response)
       .catch((error) => error);
   };
@@ -204,7 +238,7 @@ export default class services {
       'x-auth-token': token,
     };
     return axios
-      .get(URL + '/current_affairs', {headers})
+      .get(URL + '/current', {headers})
       .then((response) => response)
       .catch((error) => error);
   };
@@ -231,5 +265,34 @@ export default class services {
       .get(URL + '/user_combos', {headers})
       .then((response) => response)
       .catch((error) => error);
+  };
+  get_categories = async () => {
+    //Call authenticate api
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+    };
+    return axios
+      .get(URL + '/category', {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
+  get_chapters = async (subject: string) => {
+    //Call authenticate api
+    const token = await AsyncStorage.getItem('TOKEN');
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-auth-token': token,
+    };
+    return axios
+      .get(URL + '/chapter?subject_id=' + subject, {headers})
+      .then((response) => response)
+      .catch((error) => error);
+  };
+
+  getISTtime = () => {
+    let n = new Date();
+    return n.toLocaleString('en-IN');
   };
 }

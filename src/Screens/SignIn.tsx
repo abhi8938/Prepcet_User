@@ -40,11 +40,9 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import AuthHeader from '../Components/common/AuthHeader';
-import ErrorScreen from '../Components/common/ErrorScreen';
 import FVUModal from '../Components/modals/FVU';
 import GradientButton from '../Components/GradientButton';
 import {Height} from '../Constants/size';
-import NetInfo from '@react-native-community/netinfo';
 import OrSection from '../Components/OrSection';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Snackbar from 'react-native-snackbar';
@@ -235,13 +233,7 @@ const SignIn: FunctionComponent<props> = ({navigation, scene}) => {
       offlineAccess: false,
     });
   };
-  //* NET FAIL
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setNetFail(!state.isConnected);
-    });
-    return unsubscribe;
-  }, []);
+
   //* BACK HANDLER
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -315,7 +307,6 @@ const SignIn: FunctionComponent<props> = ({navigation, scene}) => {
         style={styles.parent}
         resizeMode="cover"
         imageStyle={{opacity: 0.05}}>
-        <ErrorScreen show={netFail} navigation={navigation} scene={scene} />
         <View style={styles.parent}>
           <StatusBar
             backgroundColor={theme.COLORS.DEFAULT}
@@ -323,9 +314,8 @@ const SignIn: FunctionComponent<props> = ({navigation, scene}) => {
           />
           <AuthHeader pageTitle={'Sign In'} back={false} />
           <KeyboardAvoidingView
-            style={{height: Height * 0.55}}
-            enabled={true}
-            behavior={Platform.OS === 'ios' ? 'position' : 'position'}
+            enabled={Platform.OS === 'ios'}
+            behavior={'position'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 19}>
             <View style={styles.groupView}>
               <TextField

@@ -69,6 +69,7 @@ export default {
     BORDER_TEXT: '#463F3A',
     FACEBOOK: '#3B5998',
     GOOGLE: '#F14336',
+    BLUE_GREY: '#f3f3f3',
   },
   SIZES: generateSizes(),
   ITEM_NAMES: {

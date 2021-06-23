@@ -1,5 +1,5 @@
 // const PRODUCTION = 'https://luxeservicesbackend.herokuapp.com/api';
-const LOCAL = 'http://192.168.1.6:3001/api';
+const LOCAL = 'http://172.20.10.3:3001/api';
 const PRODUCTION = 'https://digitalluxe.ca/api';
 const pro_heroku = 'https://prepcettest.herokuapp.com/api';
 export const URL = LOCAL;

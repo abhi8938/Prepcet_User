@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 
 import baseStyles from './styles';
 import theme from '../../Constants/theme';
@@ -8,7 +8,7 @@ type props = {};
 
 const BrandName: FunctionComponent<props> = ({}) => {
   return (
-    <View>
+    <View style={{marginLeft: Platform.OS === 'ios' ? 0 : 10}}>
       <Text style={[baseStyles.heading, styles.prep]}>
         Prep<Text style={styles.uni}>CET</Text>
       </Text>

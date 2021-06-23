@@ -8,21 +8,23 @@ import {
   Text,
   View,
 } from 'react-native';
-import Animated, {
-  useAnimatedProps,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+// import Animated, {
+//   useAnimatedProps,
+//   useAnimatedScrollHandler,
+//   useAnimatedStyle,
+//   useSharedValue,
+//   withSpring,
+//   withTiming,
+// } from 'react-native-reanimated';
 import {Height, width} from '../Constants/size';
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {getUser, handleAlert} from '../Store/actions/user';
+import {getCategories, getUser, handleAlert} from '../Store/actions/user';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Notification from '../Services/notification';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
+import {set_selected_category} from '../Store/actions/main';
 import theme from '../Constants/theme';
 import {useDispatch} from 'react-redux';
 
@@ -30,17 +32,16 @@ type props = {
   navigation: any;
   route: any;
 };
-
+const notification_service = new Notification();
 const Entrance: FunctionComponent<props> = ({navigation, route}) => {
+  // const size = useSharedValue({
+  //   width: width / 2.5,
+  //   // height: Height / ,
+  // });
   const dispatch = useDispatch();
-  const size = useSharedValue({
-    width: width / 2.5,
-    // height: Height / ,
-  });
   const handle_alert = (typeOf: string, message: string) => {
     dispatch(handleAlert(typeOf, message));
   };
-
   const validateOtp = async () => {
     const checkExpiry = (code: any) => {
       var selectedDate = new Date(code.created_at);
@@ -69,21 +70,22 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
   const isUser = async () => {
     const token = await AsyncStorage.getItem('TOKEN');
     if (token !== null) {
-      try {
-        await dispatch(getUser());
-      } catch (err) {
-        handle_alert('ERROR', err.message);
+      //* if category
+      const category = await AsyncStorage.getItem('CATEGORY');
+      if (category !== null) {
+        dispatch(set_selected_category(category));
+        return 'Main';
+      } else {
+        return 'Category';
       }
-
-      return 'Main';
     } else {
       return 'Auth';
     }
   };
   useEffect(() => {
-    size.value = {
-      width: width / 1.2,
-    };
+    // size.value = {
+    //   width: width / 1.2,
+    // };
     validateOtp();
     setTimeout(
       () => {
@@ -100,24 +102,24 @@ const Entrance: FunctionComponent<props> = ({navigation, route}) => {
       Platform.OS === 'android' ? 0 : 1100,
     );
   }, []);
-  const animations = useAnimatedStyle(() => {
-    return {
-      width: withTiming(size.value.width, {
-        duration: Platform.OS === 'android' ? 0 : 1000,
-      }),
-    };
-  });
+  // const animations = useAnimatedStyle(() => {
+  //   return {
+  //     width: withTiming(size.value.width, {
+  //       duration: Platform.OS === 'android' ? 0 : 1000,
+  //     }),
+  //   };
+  // });
   return (
     <>
       {Platform.OS !== 'android' && (
         <SafeAreaView style={styles.parent}>
-          <Animated.Image
+          <Image
             style={[
               {
                 backgroundColor: theme.COLORS.DEFAULT,
                 resizeMode: 'contain',
               },
-              animations,
+              // animations,
             ]}
             source={require('../Assets/images/prepuni_logo.jpg')}
           />
